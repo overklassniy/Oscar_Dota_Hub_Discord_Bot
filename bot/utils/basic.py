@@ -18,8 +18,12 @@ def write_rule(section, key, value):
     return rules
 
 
-def get_now():
+def get_now(need_date=True, need_date_only=False):
     now = datetime.datetime.now()
+    if need_date:
+        return now.strftime("%d/%m/%Y %H:%M:%S")
+    if need_date_only:
+        return now.strftime("%d/%m/%Y")
     return now.strftime("%H:%M:%S")
 
 

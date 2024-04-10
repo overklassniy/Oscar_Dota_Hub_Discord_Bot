@@ -12,7 +12,7 @@ from utils.basic import *
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        print(f'[{get_now()}] Fun Cog Loaded')
+        print(f'[{get_now()}] Fun cog loaded')
 
     fun_command_group = SlashCommandGroup("fun", "Commands for fun")
 
@@ -36,13 +36,17 @@ class Fun(commands.Cog):
             number1 = number2
         if number2 < number1:
             number2 = number1
-        await ctx.response.send_message(
-            content=f'{ctx.author} получает случайное число ({number1} - {number2}): **{randint(number1, number2)}**')
+
+        random_number = randint(number1, number2)
+        print(f'[{get_now()}] {ctx.author} получает случайное число ({number1} - {number2}): {random_number}')
+        await ctx.response.send_message(content=f'{ctx.author} получает случайное число ({number1} - {number2}): {random_number}')
 
     @fun_command_group.command(name='flip', description="Команда /flip из Dota 2")
     async def flip(self, ctx: discord.ApplicationContext):
         coin_sides = ['***РЕШКА***', '***ОРЁЛ***']
-        await ctx.response.send_message(content=f'{ctx.author} подбрасывает монетку: {choice(coin_sides)}')
+        random_side = choice(coin_sides)
+        print(f'[{get_now()}] {ctx.author} подбрасывает монетку: {random_side}')
+        await ctx.response.send_message(content=f'{ctx.author} подбрасывает монетку: {random_side}')
 
 
 def setup(bot):

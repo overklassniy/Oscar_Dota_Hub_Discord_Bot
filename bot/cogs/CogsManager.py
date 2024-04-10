@@ -9,26 +9,26 @@ sys.path.append('../')
 from utils.basic import *
 
 
-class CogsManagement(commands.Cog):
+class CogsManager(commands.Cog):
     def __init__(self, bot):
-        print(f'[{get_now()}] CogsManagement Cog Loaded')
+        print(f'[{get_now()}] CogsManager cog loaded')
         self.bot = bot
 
-    cogsmanagement_command_group = SlashCommandGroup("cogsmanagament", "Cogs Management Commands")
+    CogsManager_command_group = SlashCommandGroup("cogsmanagament", "Cogs Management Commands")
 
-    @cogsmanagement_command_group.command(name="load")
+    @CogsManager_command_group.command(name="load")
     async def load(self, ctx: discord.ApplicationContext, extension: str):
         print(f'[{get_now()}] Loaded {extension}')
         self.bot.load_extension(f'cogs.{extension}')
         await ctx.respond(f"Loaded {extension}", ephemeral=True)
 
-    @cogsmanagement_command_group.command(name="unload")
+    @CogsManager_command_group.command(name="unload")
     async def unload(self, ctx: discord.ApplicationContext, extension: str):
         print(f'[{get_now()}] Unloaded {extension}')
         self.bot.unload_extension(f'cogs.{extension}')
         await ctx.respond(f"Unloaded {extension}", ephemeral=True)
 
-    @cogsmanagement_command_group.command(name="reload")
+    @CogsManager_command_group.command(name="reload")
     async def reload(self, ctx: discord.ApplicationContext, extension: str):
         try:
             self.bot.reload_extension(f'cogs.{extension}')
@@ -37,7 +37,7 @@ class CogsManagement(commands.Cog):
         except Exception as e:
             await ctx.respond(f"Failed to reload {extension}. {e}", ephemeral=True)
 
-    @cogsmanagement_command_group.command(name="reload_all")
+    @CogsManager_command_group.command(name="reload_all")
     async def reload_all(self, ctx: discord.ApplicationContext):
         print(f'[{get_now()}] Reloading all cogs...')
         for file in os.listdir("bot/cogs"):
@@ -47,4 +47,4 @@ class CogsManagement(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(CogsManagement(bot))
+    bot.add_cog(CogsManager(bot))

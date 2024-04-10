@@ -12,7 +12,7 @@ from utils.patchrequest_utils import *
 class PatchRequest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        print(f'[{get_now()}] PatchRequest Cog Loaded')
+        print(f'[{get_now()}] PatchRequest cog loaded')
 
     patchrequest_command_group = SlashCommandGroup("patchrequest", "Patch Request Commands")
 
