@@ -42,7 +42,7 @@ class Listeners(commands.Cog):
                 embedVar = discord.Embed(
                     title="Reaction deleted",
                     description=f'Channel: <#{channel_id}>\n' +
-                                f'Channel ID: {channel_id}' +
+                                f'Channel ID: {channel_id}\n' +
                                 f'User: `{str(user)}`\n' +
                                 f'User ID: `{user.id}`\n' +
                                 f'Reaction: `{str(reaction)}`\n' +
@@ -54,6 +54,35 @@ class Listeners(commands.Cog):
                 await reactions_channel.send(embed=embedVar)
                 print(f'[{get_now()}] Removed reaction {str(reaction)} from channel {str(channel)}')
                 await reaction.remove(user)
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        channel_id = message.channel.id
+        if not channel_id:
+            return
+        commands_only_channels = get_rule('CHANNELS_IDS', 'COMMANDS_ONLY_CHANNELS')
+        if channel_id in :
+            if message.type != discord.MessageType.application_command:
+                # CARL.GG replacement
+                #
+                # date = get_now(need_date_only=True)
+                # time = get_now(need_date=False)
+                # messages_channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'MESSAGES_DELETED_LOG'))
+                # embedVar = discord.Embed(
+                #     title="Message deleted",
+                #     description=f'Channel: <#{channel_id}>\n' +
+                #                 f'Channel ID: {channel_id}\n' +
+                #                 f'User: `{str(message.author)}`\n' +
+                #                 f'User ID: `{message.author.id}`\n' +
+                #                 f'Message: `{str(message.content)}`\n' +
+                #                 f'Date: `{date}`\n' +
+                #                 f'Time: `{time}`',
+                #     color=0xcc0000
+                # )
+                # print(f'[{get_now()}] Sending deleted message data')
+                # await messages_channel.send(embed=embedVar)
+                print(f'[{get_now()}] Deleted message "{str(message.content)}" from channel {str(message.channel.name)}')
+                await message.delete()
 
     async def send_start_state(self):
         channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'STATE_CHANNEL_ID'))
