@@ -61,7 +61,7 @@ class Listeners(commands.Cog):
         if not channel_id:
             return
         commands_only_channels = get_rule('CHANNELS_IDS', 'COMMANDS_ONLY_CHANNELS')
-        if channel_id in :
+        if channel_id in commands_only_channels:
             if message.type != discord.MessageType.application_command:
                 # CARL.GG replacement
                 #
@@ -100,6 +100,40 @@ class Listeners(commands.Cog):
         print(f'[{get_now()}] Logged in as {self.bot.user.name}')
         if get_rule('BOOLEANS', 'SEND_START_STATE'):
             await send_start_state()
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
+        time = get_now()
+        channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS_CHANNEL_ID'))
+        embed = discord.Embed(
+            title="An error has occurred!",
+            description=f"User: <@{ctx.author.id}>\n" +
+                        f"Channel: <#{ctx.channel.id}>\n" +
+                        f"Command: `{ctx.command}`\n" +
+                        f"Error: `{error}`",
+            color=0xff0000
+        )
+        embed.set_footer(text=f'Time: {time}')
+        print(f'[{time}] Sending error message')
+        await channel.send(embed=embed)
+        raise error
+
+    @commands.Cog.listener()
+    async def on_application_command_error(self, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
+        time = get_now()
+        channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS_CHANNEL_ID'))
+        embed = discord.Embed(
+            title="An error has occurred!",
+            description=f"User: <@{ctx.author.id}>\n" +
+                        f"Channel: <#{ctx.channel.id}>\n" +
+                        f"Command: `{ctx.command}`\n" +
+                        f"Error: `{error}`",
+            color=0xff0000
+        )
+        embed.set_footer(text=f'Time: {time}')
+        print(f'[{time}] Sending error message')
+        await channel.send(embed=embed)
+        raise error
 
 
 def setup(bot):

@@ -6,15 +6,15 @@ from discord.ext import commands
 
 sys.path.append('../')
 from utils.basic import *
-from utils.patchrequest_utils import *
+from utils.patch_utils import *
 
 
-class PatchRequest(commands.Cog):
+class Patch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        print(f'[{get_now()}] PatchRequest cog loaded')
+        print(f'[{get_now()}] Patch cog loaded')
 
-    patchrequest_command_group = SlashCommandGroup("patchrequest", "Patch Request Commands")
+    patch_commands_group = SlashCommandGroup("patch", "Patch Request Commands")
 
     class RequestModal(discord.ui.Modal):
         def __init__(self, *args, **kwargs) -> None:
@@ -44,19 +44,19 @@ class PatchRequest(commands.Cog):
                 elif not is_patch_new(patch_number)[0]:
                     await ctx.respond(is_patch_new(patch_number)[1], ephemeral=True)
 
-    @patchrequest_command_group.command(name="request")
+    @patch_commands_group.command(name="request")
     async def request(self, ctx: discord.ApplicationContext):
         modal = self.RequestModal(title='Patch Request')
         await ctx.send_modal(modal)
 
-    @patchrequest_command_group.command(name="setmaxpatch", description="Set the latest patch that can be requested")
+    @patch_commands_group.command(name="setmaxpatch", description="Set the latest patch that can be requested")
     @option("max_patch", description="The latest patch", required=True)
     async def setmaxpatch(self, ctx: discord.ApplicationContext, max_patch: str):
         write_rule('STRINGS', 'MAX_PATCH', max_patch)
         await ctx.respond(f'Max patch set to {max_patch}', ephemeral=True)
         print(f'[{get_now()}] Set max patch to {max_patch}')
 
-    @patchrequest_command_group.command(name="setdone")
+    @patch_commands_group.command(name="setdone")
     @option("request_id", description="ID of the message with requested patch", required=True)
     async def setdone(self, ctx: discord.ApplicationContext, request_id: str):
         patch_number = get_requested_patch(request_id)
@@ -72,7 +72,7 @@ class PatchRequest(commands.Cog):
 
         await ctx.respond('Done', ephemeral=True)
 
-    @patchrequest_command_group.command(name="setabandoned")
+    @patch_commands_group.command(name="setabandoned")
     @option("request_id", description="ID of the message with requested patch", required=True)
     async def setabandoned(self, ctx: discord.ApplicationContext, request_id: str):
         patch_number = get_requested_patch(request_id)
@@ -90,4 +90,4 @@ class PatchRequest(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(PatchRequest(bot))
+    bot.add_cog(Patch(bot))

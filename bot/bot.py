@@ -21,7 +21,7 @@ class Oscar(commands.Bot):
 
 
 intents = discord.Intents.all()
-bot = Oscar(command_prefix="!", intents=intents)
+bot = Oscar(command_prefix="~", intents=intents)
 
 for file in os.listdir("bot/cogs"):
     if file.endswith(".py") and file != "__init__.py.py":

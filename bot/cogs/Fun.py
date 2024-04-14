@@ -14,9 +14,9 @@ class Fun(commands.Cog):
         self.bot = bot
         print(f'[{get_now()}] Fun cog loaded')
 
-    fun_command_group = SlashCommandGroup("fun", "Commands for fun")
+    fun_commands_group = SlashCommandGroup("fun", "Commands for fun")
 
-    @fun_command_group.command(name='roll', description="Команда /roll из Dota 2")
+    @fun_commands_group.command(name='roll', description="Команда /roll из Dota 2")
     @option("number1", description="Введите минимальное число", required=False)
     @option("number2", description="Введите максимальное число", required=False)
     async def roll(self, ctx: discord.ApplicationContext, number1: int, number2: int):
@@ -41,7 +41,7 @@ class Fun(commands.Cog):
         print(f'[{get_now()}] {ctx.author} получает случайное число ({number1} - {number2}): {random_number}')
         await ctx.response.send_message(content=f'{ctx.author} получает случайное число ({number1} - {number2}): {random_number}')
 
-    @fun_command_group.command(name='flip', description="Команда /flip из Dota 2")
+    @fun_commands_group.command(name='flip', description="Команда /flip из Dota 2")
     async def flip(self, ctx: discord.ApplicationContext):
         coin_sides = ['***РЕШКА***', '***ОРЁЛ***']
         random_side = choice(coin_sides)
