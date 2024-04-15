@@ -35,11 +35,13 @@ class Cogs(commands.Cog):
     @cogs_commands_group.command(name="reload")
     @option(name="extension", description="Cog extension to load", required=True)
     async def reload(self, ctx: discord.ApplicationContext, extension: str):
+        extension = extension.lower().capitalize()
         try:
             self.bot.reload_extension(f'cogs.{extension}')
             print(f'[{get_now()}] Reloaded {extension}')
             await ctx.respond(f"Reloaded {extension}", ephemeral=True)
         except Exception as e:
+            print(f"[{get_now()}] Failed to reload {extension}. {e}")
             await ctx.respond(f"Failed to reload {extension}. {e}", ephemeral=True)
 
     @cogs_commands_group.command(name="reload_all")

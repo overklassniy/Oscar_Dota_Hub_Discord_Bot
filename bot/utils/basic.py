@@ -1,5 +1,6 @@
 import datetime
 import json
+from urllib.parse import urlparse
 
 
 def get_config():
@@ -30,3 +31,11 @@ def get_now(need_date=True, need_date_only=False):
 def is_allowed_string(s, allowed_string):
     allowed_chars = set(allowed_string)
     return set(s).issubset(allowed_chars)
+
+
+def uri_validator(x):
+    try:
+        result = urlparse(x)
+        return all([result.scheme, result.netloc])
+    except AttributeError:
+        return False

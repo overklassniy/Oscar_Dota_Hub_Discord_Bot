@@ -7,6 +7,8 @@ sys.path.append("..")
 from utils.basic import *
 from utils.listeners_utils import *
 
+testing = get_rule('BOOLEANS', 'TESTING')
+
 
 class Listeners(commands.Cog):
     def __init__(self, bot):
@@ -18,7 +20,7 @@ class Listeners(commands.Cog):
         channel_id = payload.channel_id
         user = payload.member
         message_id = payload.message_id
-        channels = get_rule('CHANNELS_IDS', 'SEARCH_CHANNELS')
+        channels = get_rule('CHANNELS_IDS', 'SEARCH')
         if get_rule('BOOLEANS', 'TESTING'):
             channels = get_rule('CHANNELS_IDS', 'TESTING_CHANNELS')
         if channel_id not in channels:
@@ -61,79 +63,30 @@ class Listeners(commands.Cog):
         if not channel_id:
             return
         commands_only_channels = get_rule('CHANNELS_IDS', 'COMMANDS_ONLY_CHANNELS')
-        if channel_id in commands_only_channels:
+        if channel_id in commands_only_channels and not testing:
             if message.type != discord.MessageType.application_command:
-                # CARL.GG replacement
-                #
-                # date = get_now(need_date_only=True)
-                # time = get_now(need_date=False)
-                # messages_channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'MESSAGES_DELETED_LOG'))
-                # embedVar = discord.Embed(
-                #     title="Message deleted",
-                #     description=f'Channel: <#{channel_id}>\n' +
-                #                 f'Channel ID: {channel_id}\n' +
-                #                 f'User: `{str(message.author)}`\n' +
-                #                 f'User ID: `{message.author.id}`\n' +
-                #                 f'Message: `{str(message.content)}`\n' +
-                #                 f'Date: `{date}`\n' +
-                #                 f'Time: `{time}`',
-                #     color=0xcc0000
-                # )
-                # print(f'[{get_now()}] Sending deleted message data')
-                # await messages_channel.send(embed=embedVar)
                 print(f'[{get_now()}] Deleted message "{str(message.content)}" from channel {str(message.channel.name)}')
                 await message.delete()
-
-    async def send_start_state(self):
-        channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'STATE_CHANNEL_ID'))
-        embed = discord.Embed(
-            title="The bot is running",
-            description=f'Date: {get_now(need_date_only=True)}' +
-                        f'Time: `{get_now(need_date=False)}`',
-            color=0x1f8b4c
-        )
-        print(f'[{get_now()}] Sending start state')
-        await channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'[{get_now()}] Logged in as {self.bot.user.name}')
-        if get_rule('BOOLEANS', 'SEND_START_STATE'):
+        if not testing and get_rule('BOOLEANS', 'SEND_START_STATE'):
             await send_start_state()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
-        time = get_now()
-        channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS_CHANNEL_ID'))
-        embed = discord.Embed(
-            title="An error has occurred!",
-            description=f"User: <@{ctx.author.id}>\n" +
-                        f"Channel: <#{ctx.channel.id}>\n" +
-                        f"Command: `{ctx.command}`\n" +
-                        f"Error: `{error}`",
-            color=0xff0000
-        )
-        embed.set_footer(text=f'Time: {time}')
-        print(f'[{time}] Sending error message')
-        await channel.send(embed=embed)
-        raise error
+        if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
+            await handle_error(self, ctx, error)
+        else:
+            raise error
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
-        time = get_now()
-        channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS_CHANNEL_ID'))
-        embed = discord.Embed(
-            title="An error has occurred!",
-            description=f"User: <@{ctx.author.id}>\n" +
-                        f"Channel: <#{ctx.channel.id}>\n" +
-                        f"Command: `{ctx.command}`\n" +
-                        f"Error: `{error}`",
-            color=0xff0000
-        )
-        embed.set_footer(text=f'Time: {time}')
-        print(f'[{time}] Sending error message')
-        await channel.send(embed=embed)
-        raise error
+        if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
+            await handle_error(self, ctx, error)
+        else:
+            raise error
 
 
 def setup(bot):

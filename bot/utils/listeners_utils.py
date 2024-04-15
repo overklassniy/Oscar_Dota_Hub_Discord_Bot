@@ -1,4 +1,6 @@
-import json
+import discord
+
+from utils.basic import *
 
 
 def get_deleted_reactions():
@@ -14,3 +16,32 @@ def write_deleted_reactions(channel_name: str, data: dict):
     deleted_reactions[channel_name].append(data)
     json.dump(deleted_reactions, open('data/deleted_reactions.json', 'w'))
     return f'Wrote a new deleted reaction to {channel_name}'
+
+
+async def send_start_state(self):
+    channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'STATE'))
+    embed = discord.Embed(
+        title="The bot is running",
+        description=f'Date: {get_now(need_date_only=True)}' +
+                    f'Time: `{get_now(need_date=False)}`',
+        color=0x1f8b4c
+    )
+    print(f'[{get_now()}] Sending start state')
+    await channel.send(embed=embed)
+
+
+async def handle_error(listeners, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
+    time = get_now()
+    channel = listeners.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS'))
+    embed = discord.Embed(
+        title="An error has occurred!",
+        description=f"User: <@{ctx.author.id}>\n" +
+                    f"Channel: <#{ctx.channel.id}>\n" +
+                    f"Command: `{ctx.command}`\n" +
+                    f"Error: `{error}`",
+        color=0xff0000
+    )
+    embed.set_footer(text=f'Time: {time}')
+    print(f'[{time}] Sending error message')
+    await channel.send(embed=embed)
+    raise error
