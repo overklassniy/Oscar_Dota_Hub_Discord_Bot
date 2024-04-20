@@ -29,7 +29,7 @@ if testing:
 bot = Oscar(command_prefix=prefix, intents=intents)
 
 for file in os.listdir("bot/cogs"):
-    if file.endswith(".py") and file != "__init__.py.py":
+    if file.endswith(".py") and file != "__init__.py":
         bot.load_extension(f'cogs.{file[:-3]}')
 
 discord_token = os.getenv('DISCORD_TOKEN_OSCAR')

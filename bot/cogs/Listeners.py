@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 
 sys.path.append("..")
+from cogs.Tasks import *
 from utils.basic import *
 from utils.listeners_utils import *
 
@@ -22,7 +23,7 @@ class Listeners(commands.Cog):
         message_id = payload.message_id
         channels = get_rule('CHANNELS_IDS', 'SEARCH')
         if get_rule('BOOLEANS', 'TESTING'):
-            channels = get_rule('CHANNELS_IDS', 'TESTING_CHANNELS')
+            channels = get_rule('CHANNELS_IDS', 'TEST')
         if channel_id not in channels:
             return
         channel = self.bot.get_channel(channel_id)
@@ -71,18 +72,23 @@ class Listeners(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'[{get_now()}] Logged in as {self.bot.user.name}')
+
+        Tasks.change_status.start(self)
+        Tasks.auto_search.start(self)
+        Tasks.check_dagons.start(self)
+
         if not testing and get_rule('BOOLEANS', 'SEND_START_STATE'):
             await send_start_state()
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
+    async def on_command_error(self, ctx: discord.ApplicationContext, error):
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
             await handle_error(self, ctx, error)
         else:
             raise error
 
     @commands.Cog.listener()
-    async def on_application_command_error(self, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
+    async def on_application_command_error(self, ctx: discord.ApplicationContext, error):
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
             await handle_error(self, ctx, error)
         else:

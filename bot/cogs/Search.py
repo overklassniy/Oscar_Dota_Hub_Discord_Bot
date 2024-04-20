@@ -40,6 +40,32 @@ class Search(commands.Cog):
         await ctx.respond('Done', ephemeral=True)
         print(f'[{get_now()}] Search message sent to {ctx.channel.name}')
 
+    @commands.command()
+    async def gather(self, ctx, ip=None):
+        replied_message = ctx.message.reference
+        if not await check_ip_provided(ctx, ip):
+            return
+
+        await ctx.message.delete()
+        message = await ctx.fetch_message(replied_message.message_id)
+        target_emoji = get_rule('STRINGS', 'DAGON_EMOJI')
+        users = []
+        for reaction in message.reactions:
+            if str(reaction) == target_emoji:
+                async for user in reaction.users():
+                    users.append(user)
+        users = list(set(users))
+        users_dict = {user: '❌' for user in users}
+
+        ready_message = await send_ready_embed(ctx, users, users_dict)
+        view = AcceptButton(users, users_dict, ready_message)
+
+        reminder_embed, connect_embed = create_embeds(message, ip)
+        forbidden_users = await notify_users(users, reminder_embed, connect_embed, view)
+
+        if forbidden_users:
+            await handle_forbidden_users(self, ctx, forbidden_users)
+
 
 def setup(bot):
     bot.add_cog(Search(bot))

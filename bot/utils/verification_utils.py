@@ -1,7 +1,9 @@
-import asyncio
+import sys
 
 import discord
 from discord.ui import Button, View
+
+sys.path.append("..")
 from utils.basic import *
 from utils.steam_opendota import *
 
@@ -29,9 +31,9 @@ async def send_verification_instructions(ctx, steam_url, passphrase):
         lang = en_role_id
     embed_info, embed_profile, embed_howto = create_verification_embeds(steam_url, passphrase, lang)
     button_done = create_verification_button(passphrase, steam_url, ctx)
-    first_message = await ctx.author.send(embeds=[embed_info, embed_profile, embed_howto], view=View(button_done))
+    first_message = await ctx.author.send(embeds=[embed_info, embed_profile, embed_howto], view=View(button_done, timeout=None))
     verify_channel_message_text = 'Please, check your DM for verification instructions.'
-    if ru_role_id in [y.id for y in ctx.author.roles]:
+    if lang == ru_role_id:
         verify_channel_message_text = 'Пожалуйста, проверьте ЛИЧНЫЕ СООБЩЕНИЯ для дальнейших инструкций'
     verify_channel_message = await ctx.followup.send(content=verify_channel_message_text)
     await verify_channel_message.delete(delay=5)
@@ -152,6 +154,11 @@ def create_verification_button(passphrase, steam_url, ctx):
 
     async def button_callback(button_interaction):
         if passphrase in get_realname(steam_url):
+            users_dict = get_users()
+            users_dict[str(button_interaction.user.id)] = str(steamurl_to_steamid64(steam_url))
+            write_users(users_dict)
+            print(f'[{get_now()}] Wrote "{button_interaction.user.id}": "{steamurl_to_steamid64(steam_url)}" to users.json')
+
             verified_role = discord.utils.get(ctx.guild.roles, id=get_rule('ROLES_IDS', 'VERIFIED'))
             unverified_role = discord.utils.get(ctx.guild.roles, id=get_rule('ROLES_IDS', 'UNVERIFIED'))
             member = ctx.guild.get_member(button_interaction.user.id)
@@ -159,13 +166,16 @@ def create_verification_button(passphrase, steam_url, ctx):
             await member.add_roles(verified_role)
             print(f'[{get_now()}] Removed "Not verified" role from {ctx.author.name} ({ctx.author.id}).')
             await member.remove_roles(unverified_role)
-            print(f'[{get_now()}] Disabled button from DM instructions')
-            await button_interaction.response.edit_message(view=None)
             lang = en_role_id
             if ru_role_id in [y.id for y in ctx.author.roles]:
                 lang = ru_role_id
             print(f'[{get_now()}] Sending verification status: succeed')
             await button_interaction.user.send(embeds=create_verification_embeds(steam_url, passphrase, lang, state=1))
+            print(f'[{get_now()}] Disabling button from DM instructions')
+            try:
+                await button_interaction.response.edit_message(view=None)
+            except Exception as e:
+                print(str(e))
         else:
             lang = en_role_id
             if ru_role_id in [y.id for y in ctx.author.roles]:

@@ -39,3 +39,15 @@ def uri_validator(x):
         return all([result.scheme, result.netloc])
     except AttributeError:
         return False
+
+
+def write_users(data):
+    with open('data/users.json', 'w', encoding='utf-8') as file:
+        json.dump(data, file)
+
+
+def get_users():
+    with open('data/users.json', 'r', encoding='utf-8') as file:
+        content = file.read()
+        unpacked_data = json.loads(content)
+    return unpacked_data

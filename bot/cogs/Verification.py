@@ -9,6 +9,7 @@ from discord.ext import commands
 sys.path.append("..")
 from utils.basic import *
 from utils.verification_utils import *
+from utils.steam_opendota import *
 
 
 class Verification(commands.Cog):
@@ -16,10 +17,10 @@ class Verification(commands.Cog):
         self.bot = bot
         print(f'[{get_now()}] Verification cog loaded')
 
-    fun_commands_group = SlashCommandGroup("verification", "Verification related commands")
+    fun_commands_group = SlashCommandGroup("verification", "Команды для верификации")
 
-    @fun_commands_group.command(name='verify', description="Verification command")
-    @option("steam_url", description="Input your Steam profile URL", required=True)
+    @fun_commands_group.command(name='verify', description="Команда для верификации")
+    @option("steam_url", description="Введите URL своего профиля в Steam", required=True)
     async def verify(self, ctx: discord.ApplicationContext, steam_url: str):
         ru_role_id = get_rule('ROLES_IDS', 'RU')
         en_role_id = get_rule('ROLES_IDS', 'EN')
@@ -32,7 +33,7 @@ class Verification(commands.Cog):
         if lang == ru_role_id:
             text = f'Эта команда доступна только в канале <#{verify_channel}>!'
         if ctx.channel_id != verify_channel:
-            print(f'[{get_now()}] Wrong channel for verification: {ctx.channel_id}')
+            print(f'[{get_now()}] Wrong channel for verification: {ctx.channel_id} ({ctx.channel.name})')
             await ctx.respond(content=text, ephemeral=True)
             return
 
@@ -47,7 +48,8 @@ class Verification(commands.Cog):
             if ru_role_id in [y.id for y in ctx.author.roles]:
                 text = 'Неверная ссылка на Ваш профиль Steam.'
             print(f'[{get_now()}] Wrong steam profile URL: {steam_url}')
-            await ctx.respond(content=text, ephemeral=True)
+            message = await ctx.respond(content=text)
+            await message.delete(delay=5)
             return
 
         try:
@@ -58,9 +60,8 @@ class Verification(commands.Cog):
             if lang == ru_role_id:
                 text = 'Я не смог отправить Вам личное сообщение. Пожалуйста, проверьте Ваши настройки конфиденциальности и попробуйте еще раз.'
             print(f"[{get_now()}] Couldn't send DM for verification")
-            await ctx.respond(
-                content=text,
-                ephemeral=True)
+            message = await ctx.respond(content=text)
+            await message.delete(delay=5)
 
 
 def setup(bot):

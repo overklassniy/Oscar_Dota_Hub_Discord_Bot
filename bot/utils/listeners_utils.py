@@ -30,7 +30,7 @@ async def send_start_state(self):
     await channel.send(embed=embed)
 
 
-async def handle_error(listeners, ctx: discord.ApplicationContext, error: discord.ApplicationContext):
+async def handle_error(listeners, ctx: discord.ApplicationContext, error):
     time = get_now()
     channel = listeners.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS'))
     embed = discord.Embed(
@@ -38,10 +38,12 @@ async def handle_error(listeners, ctx: discord.ApplicationContext, error: discor
         description=f"User: <@{ctx.author.id}>\n" +
                     f"Channel: <#{ctx.channel.id}>\n" +
                     f"Command: `{ctx.command}`\n" +
-                    f"Error: `{error}`",
+                    f"Error: `{str(error)}`",
         color=0xff0000
     )
     embed.set_footer(text=f'Time: {time}')
     print(f'[{time}] Sending error message')
     await channel.send(embed=embed)
-    raise error
+    print(error)
+    message = await ctx.respond('An error occurred. Please try again.')
+    await message.delete(delay=5)

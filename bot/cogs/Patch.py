@@ -14,35 +14,56 @@ class Patch(commands.Cog):
         self.bot = bot
         print(f'[{get_now()}] Patch cog loaded')
 
-    patch_commands_group = SlashCommandGroup("patch", "Patch Request Commands")
+    patch_commands_group = SlashCommandGroup("patch", "Команды для запроса патчей")
 
     class RequestModal(discord.ui.Modal):
         def __init__(self, *args, **kwargs) -> None:
             super().__init__(*args, **kwargs)
             self.add_item(
-                discord.ui.InputText(label="Input patch number and letter divided by dot", placeholder='For example: 7.23b', min_length=4,
+                discord.ui.InputText(label="Введите номер патча и букву, разделенные точкой", placeholder='Например: 7.23b', min_length=4,
                                      max_length=5, required=True))
 
         async def callback(self, ctx: discord.Interaction):
+            ru_role_id = get_rule('ROLES_IDS', 'RU')
+            en_role_id = get_rule('ROLES_IDS', 'EN')
+            if ru_role_id in [y.id for y in ctx.author.roles]:
+                lang = ru_role_id
+            else:
+                lang = en_role_id
             patch_number = self.children[0].value.lower()
-            if is_allowed_patch_string(patch_number) and patch_number < get_rule('STRINGS', 'MAX_PATCH') and is_patch_new(patch_number)[0]:
+            if is_allowed_patch_string(patch_number) and patch_number < get_rule('STRINGS', 'MAX_PATCH') and is_patch_new(patch_number, ctx)[0]:
                 embed = discord.Embed(color=discord.Color.yellow())
                 embed.set_author(name=str(ctx.user.global_name), icon_url=ctx.user.avatar)
-                embed.title = 'A new patch has been requested'
-                embed.description = f'Patch: **{patch_number}**'
-                embed.set_footer(text='Status: REQUESTED')
+                title = 'A new patch has been requested'
+                if lang == ru_role_id:
+                    title = 'Запрошен новый патч'
+                embed.title = title
+                desctiption = f'Patch: **{patch_number}**'
+                if lang == ru_role_id:
+                    desctiption = f'Патч: **{patch_number}**'
+                embed.description = desctiption
+                footer = 'Status: REQUESTED'
+                if lang == ru_role_id:
+                    footer = 'Статус: ЗАПРОШЕНО'
+                embed.set_footer(text=footer)
                 await ctx.respond(embed=embed)
                 message = await ctx.original_response()
                 print(f'[{get_now()}] {add_requested_patch(message.id, patch_number)}')
             else:
                 if not is_allowed_patch_string(patch_number):
-                    await ctx.respond('Invalid patch number, please, use only decimal nubmers, dot and correct patch letter.', ephemeral=True)
+                    text1 = 'Invalid patch number, please, use only decimal nubmers, dot and correct patch letter.'
+                    if lang == ru_role_id:
+                        text1 = 'Неверный номер патча, пожалуйста, используйте только десятичные числа, точку и правильную букву патча.'
+                    await ctx.respond(text1, ephemeral=True)
                 elif patch_number >= get_rule('STRINGS', 'MAX_PATCH'):
+                    text2 = f'Invalid patch number, please input a valid patch number, that is older that the {get_rule('STRINGS', 'MAX_PATCH')}.'
+                    if lang == ru_role_id:
+                        text2 = f'Неверный номер патча, пожалуйста, введите действительный номер патча, который старше, чем {get_rule('STRINGS', 'MAX_PATCH')}.'
                     await ctx.respond(
-                        f'Invalid patch number, please input a valid patch number, that is older that the {get_rule('STRINGS', 'MAX_PATCH')}.',
+                        text2,
                         ephemeral=True)
-                elif not is_patch_new(patch_number)[0]:
-                    await ctx.respond(is_patch_new(patch_number)[1], ephemeral=True)
+                elif not is_patch_new(patch_number, ctx)[0]:
+                    await ctx.respond(is_patch_new(patch_number, ctx)[1], ephemeral=True)
 
     @patch_commands_group.command(name="request")
     async def request(self, ctx: discord.ApplicationContext):

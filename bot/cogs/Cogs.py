@@ -48,7 +48,7 @@ class Cogs(commands.Cog):
     async def reload_all(self, ctx: discord.ApplicationContext):
         print(f'[{get_now()}] Reloading all cogs...')
         for file in os.listdir("bot/cogs"):
-            if file.endswith(".py") and file != "__init__.py.py":
+            if file.endswith(".py") and file != "__init__.py":
                 self.bot.reload_extension(f'cogs.{file[:-3]}')
                 await ctx.respond(f"Reloaded {file[:-3]}", ephemeral=True)
 

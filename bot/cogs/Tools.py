@@ -18,11 +18,12 @@ class Tools(commands.Cog):
             replied_message = await ctx.fetch_message(ctx.message.reference.message_id)
             embed = discord.Embed(description=replied_message.content, color=discord.Color.blurple())
             embed.set_author(name=replied_message.author.name, icon_url=replied_message.author.avatar)
-            await channel.send(embed=embed)  # Move the message with the avatar and sender's name
-            await replied_message.delete()  # Delete the original message
-            await ctx.message.delete()  # Delete the /move command
+            await channel.send(embed=embed)
+            await replied_message.delete()
+            await ctx.message.delete()
         else:
-            await ctx.send('You must reply to the message to move it.')
+            message = await ctx.send('You must reply to the message to move it.')
+            await message.delete(delay=5)
 
 
 def setup(bot):

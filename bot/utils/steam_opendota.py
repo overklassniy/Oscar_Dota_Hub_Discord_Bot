@@ -1,9 +1,9 @@
-import json
 import os
 
 import opendota
 from dotenv import load_dotenv
 from steam_web_api import Steam
+from utils.basic import *
 
 load_dotenv()
 
@@ -22,10 +22,10 @@ def steamid64_to_steamid32(commid):
 def steamurl_to_steamid64(url):
     if url[:35] != 'https://steamcommunity.com/profiles':
         if url[-1] == '/':
-            id = url.split('/')[-2]
+            profile_id = url.split('/')[-2]
         else:
-            id = url.split('/')[-1]
-        response = client_steam.users.search_user(id)
+            profile_id = url.split('/')[-1]
+        response = client_steam.users.search_user(profile_id)
         steamid64 = int(response['player']['steamid'])
         return steamid64
     junk_steamid64 = url[35:]
@@ -40,8 +40,8 @@ def get_nickname(url):
 
 
 def get_realname(url):
-    id = steamurl_to_steamid64(url)
-    response = client_steam.users.get_user_details(str(id))
+    idd = steamurl_to_steamid64(url)
+    response = client_steam.users.get_user_details(str(idd))
     try:
         return response['player']['realname']
     except Exception:
@@ -65,7 +65,7 @@ def get_rating_score(steamid32):
                      34: 2000, 35: 2150, 41: 2310, 42: 2450, 43: 2610, 44: 2770, 45: 2930, 51: 3080, 52: 3230, 53: 3390, 54: 3540, 55: 3700, 61: 3850,
                      62: 4000, 63: 4150, 64: 4300, 65: 4460, 71: 4620, 72: 4820, 73: 5020, 74: 5220, 75: 5420}
     response = client_opendota.get_player(steamid32)
-    if response != []:
+    if response:
         try:
             rank_tier = int(response['rank_tier'])
         except Exception:
@@ -79,17 +79,12 @@ def get_rating_score(steamid32):
     return solo_competitive_rank
 
 
-def unpack_json(f):
-    with open(f, 'r', encoding='utf-8') as file:
-        content = file.read()
-        unpacked_data = json.loads(content)
-    return unpacked_data
-
-
-def get_mmr_from_discord(dsname):
-    users = unpack_json('users')
+def get_mmr_from_discord(dsid: str):
+    users = get_users()
     try:
-        steamurl = users[dsname]
-    except Exception:
+        steam64 = users[dsid]
+    except Exception as e:
         return 10
-    return get_rating_score(steamurl_to_steamid32(steamurl))
+    score = get_rating_score(steamid64_to_steamid32(steam64))
+    print(f'[{get_now()}] Getting MMR from {dsid}: {steam64} - {score}')
+    return score

@@ -20,6 +20,7 @@ class Fun(commands.Cog):
     @option("number1", description="Введите минимальное число", required=False)
     @option("number2", description="Введите максимальное число", required=False)
     async def roll(self, ctx: discord.ApplicationContext, number1: int, number2: int):
+        ru_role_id = get_rule('ROLES_IDS', 'RU')
         if not number1:
             number1 = 1
         if number1 < 0:
@@ -38,15 +39,22 @@ class Fun(commands.Cog):
             number2 = number1
 
         random_number = randint(number1, number2)
-        print(f'[{get_now()}] {ctx.author} получает случайное число ({number1} - {number2}): {random_number}')
-        await ctx.response.send_message(content=f'{ctx.author} получает случайное число ({number1} - {number2}): {random_number}')
+        text = f'{ctx.author} gets a random number ({number1} - {number2}): {random_number}'
+        if ru_role_id in [y.id for y in ctx.author.roles]:
+            text = f'{ctx.author} получает случайное число ({number1} - {number2}): {random_number}'
+        print(f'[{get_now()}] {text}')
+        await ctx.response.send_message(content=text)
 
     @fun_commands_group.command(name='flip', description="Команда /flip из Dota 2")
     async def flip(self, ctx: discord.ApplicationContext):
+        ru_role_id = get_rule('ROLES_IDS', 'RU')
         coin_sides = ['***РЕШКА***', '***ОРЁЛ***']
         random_side = choice(coin_sides)
-        print(f'[{get_now()}] {ctx.author} подбрасывает монетку: {random_side}')
-        await ctx.response.send_message(content=f'{ctx.author} подбрасывает монетку: {random_side}')
+        text = f'{ctx.author} flips a coin: {random_side}'
+        if ru_role_id in [y.id for y in ctx.author.roles]:
+            text = f'{ctx.author} подбрасывает монетку: {random_side}'
+        print(f'[{get_now()}] {text}')
+        await ctx.response.send_message(content=text)
 
 
 def setup(bot):

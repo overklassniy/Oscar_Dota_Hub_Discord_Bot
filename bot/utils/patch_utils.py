@@ -1,5 +1,6 @@
 import json
 
+import discord
 from utils.basic import *
 
 
@@ -9,15 +10,30 @@ def is_allowed_patch_string(s):
     return False
 
 
-def is_patch_new(patch_number: str):
+def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
+    ru_role_id = get_rule('ROLES_IDS', 'RU')
+    en_role_id = get_rule('ROLES_IDS', 'EN')
+    if ru_role_id in [y.id for y in ctx.author.roles]:
+        lang = ru_role_id
+    else:
+        lang = en_role_id
     patches_info = get_patches_info()
     done = patches_info['READY']
     abandoned = patches_info['ABANDONED']
     if patch_number in abandoned:
-        return False, f'The {patch_number} is ABANDONED'
+        text1 = f'The {patch_number} is ABANDONED'
+        if lang == ru_role_id:
+            text1 = f'{patch_number} НЕ БУДЕТ СДЕЛАН'
+        return False, text1
     if patch_number in done:
-        return False, f'The {patch_number} is READY'
-    return True, f'The {patch_number} is NEW'
+        text2 = f'The {patch_number} is READY'
+        if lang == ru_role_id:
+            text2 = f'{patch_number} уже СДЕЛАН'
+        return False, text2
+    text3 = f'The {patch_number} is NEW'
+    if lang == ru_role_id:
+        text3 = f'{patch_number} будет СДЕЛАН'
+    return True, text3
 
 
 def get_patches_info():
