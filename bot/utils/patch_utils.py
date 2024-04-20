@@ -4,7 +4,7 @@ import discord
 from utils.basic import *
 
 
-def is_allowed_patch_string(s):
+def is_allowed_patch_string(s: str) -> bool:
     if is_allowed_string(s, allowed_string=get_rule('STRINGS', 'ALLOWED_PATCH_STRING')) and '.' in s and '7' == s[0] and '.' == s[1]:
         return True
     return False
@@ -36,7 +36,7 @@ def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
     return True, text3
 
 
-def get_patches_info():
+def get_patches_info() -> dict:
     patches_info = json.load(open('data/patches_info.json', 'r'))
     return patches_info
 
@@ -66,7 +66,7 @@ def get_requested_patch(request_id):
     return patch_number
 
 
-def add_requested_patch(request_id, patch_number):
+def add_requested_patch(request_id, patch_number: str):
     patches_info = get_patches_info()
     requested_patches = patches_info['REQUESTED']
     requested_patches[request_id] = patch_number
@@ -83,3 +83,45 @@ def delete_requested_patch(request_id):
     patches_info['REQUESTED'] = requested_patches
     json.dump(patches_info, open('data/patches_info.json', 'w'))
     return f'Deleted {patch_number} from REQUESTED (id = {request_id})'
+
+
+def create_script(depot_manifest_dict: dict, max_timestamp: float):
+    if max_timestamp >= 1651700755:
+        template = f'''download_depot 570 228989 {depot_manifest_dict[228989][0]} //vc2022       https://steamdb.info/depot/228983/manifests/
+download_depot 570 228990 {depot_manifest_dict[228990][0]} //dx2010       https://steamdb.info/depot/228990/manifests/
+download_depot 570 373302 {depot_manifest_dict[373302][0]} //win32        https://steamdb.info/depot/373302/manifests/
+download_depot 570 373303 {depot_manifest_dict[373303][0]} //win64        https://steamdb.info/depot/373303/manifests/
+download_depot 570 373301 {depot_manifest_dict[373301][0]} //content1     https://steamdb.info/depot/373301/manifests/
+download_depot 570 381451 {depot_manifest_dict[381451][0]} //content2     https://steamdb.info/depot/381451/manifests/
+download_depot 570 381452 {depot_manifest_dict[381452][0]} //content3     https://steamdb.info/depot/381452/manifests/
+download_depot 570 381453 {depot_manifest_dict[381453][0]} //content4     https://steamdb.info/depot/381453/manifests/
+download_depot 570 381454 {depot_manifest_dict[381454][0]} //content5     https://steamdb.info/depot/381454/manifests/
+download_depot 570 381455 {depot_manifest_dict[381455][0]} //content6     https://steamdb.info/depot/381455/manifests/
+download_depot 570 373307 {depot_manifest_dict[373307][0]} //lowviolence  https://steamdb.info/depot/373307/manifests/
+download_depot 570 381456 {depot_manifest_dict[381456][0]} //russian      https://steamdb.info/depot/381456/manifests/
+download_depot 570 373308 {depot_manifest_dict[373308][0]} //korean       https://steamdb.info/depot/373308/manifests/
+download_depot 570 373309 {depot_manifest_dict[373309][0]} //chinese      https://steamdb.info/depot/373309/manifests/
+download_depot 570 381450 {depot_manifest_dict[381450][0]} //workshop     https://steamdb.info/depot/381450/manifests/
+download_depot 570 401531 {depot_manifest_dict[401531][0]} //opengl       https://steamdb.info/depot/401531/manifests/
+download_depot 570 401535 {depot_manifest_dict[401535][0]} //vulkancommon https://steamdb.info/depot/401535/manifests/
+download_depot 570 401536 {depot_manifest_dict[401536][0]} //vulkanwin64  https://steamdb.info/depot/401536/manifests/'''
+    else:
+        template = f'''download_depot 570 228983 {depot_manifest_dict[228983][0]} //vc2010       https://steamdb.info/depot/228983/manifests/
+download_depot 570 228990 {depot_manifest_dict[228990][0]} //dx2010       https://steamdb.info/depot/228990/manifests/
+download_depot 570 373302 {depot_manifest_dict[373302][0]} //win32        https://steamdb.info/depot/373302/manifests/
+download_depot 570 373303 {depot_manifest_dict[373303][0]} //win64        https://steamdb.info/depot/373303/manifests/
+download_depot 570 373301 {depot_manifest_dict[373301][0]} //content1     https://steamdb.info/depot/373301/manifests/
+download_depot 570 381451 {depot_manifest_dict[381451][0]} //content2     https://steamdb.info/depot/381451/manifests/
+download_depot 570 381452 {depot_manifest_dict[381452][0]} //content3     https://steamdb.info/depot/381452/manifests/
+download_depot 570 381453 {depot_manifest_dict[381453][0]} //content4     https://steamdb.info/depot/381453/manifests/
+download_depot 570 381454 {depot_manifest_dict[381454][0]} //content5     https://steamdb.info/depot/381454/manifests/
+download_depot 570 381455 {depot_manifest_dict[381455][0]} //content6     https://steamdb.info/depot/381455/manifests/
+download_depot 570 373307 {depot_manifest_dict[373307][0]} //lowviolence  https://steamdb.info/depot/373307/manifests/
+download_depot 570 381456 {depot_manifest_dict[381456][0]} //russian      https://steamdb.info/depot/381456/manifests/
+download_depot 570 373308 {depot_manifest_dict[373308][0]} //korean       https://steamdb.info/depot/373308/manifests/
+download_depot 570 373309 {depot_manifest_dict[373309][0]} //chinese      https://steamdb.info/depot/373309/manifests/
+download_depot 570 381450 {depot_manifest_dict[381450][0]} //workshop     https://steamdb.info/depot/381450/manifests/
+download_depot 570 401531 {depot_manifest_dict[401531][0]} //opengl       https://steamdb.info/depot/401531/manifests/
+download_depot 570 401535 {depot_manifest_dict[401535][0]} //vulkancommon https://steamdb.info/depot/401535/manifests/
+download_depot 570 401536 {depot_manifest_dict[401536][0]} //vulkanwin64  https://steamdb.info/depot/401536/manifests/'''
+    return template

@@ -1,9 +1,10 @@
-import discord
+import json
 
+import discord
 from utils.basic import *
 
 
-def get_deleted_reactions():
+def get_deleted_reactions() -> dict:
     deleted_reactions = json.load(open('data/deleted_reactions.json', 'r'))
     # TODO: сделать вывод в формате списка, собрав все удаленные реакции из всех каналов в один (не забыв указать канал из которого забирался) и отсортировав по возрастанию где null (None) идут самыми ранними
     return deleted_reactions
@@ -18,8 +19,8 @@ def write_deleted_reactions(channel_name: str, data: dict):
     return f'Wrote a new deleted reaction to {channel_name}'
 
 
-async def send_start_state(self):
-    channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'STATE'))
+async def send_start_state(listeners):
+    channel = listeners.bot.get_channel(get_rule('CHANNELS_IDS', 'STATE'))
     embed = discord.Embed(
         title="The bot is running",
         description=f'Date: {get_now(need_date_only=True)}' +

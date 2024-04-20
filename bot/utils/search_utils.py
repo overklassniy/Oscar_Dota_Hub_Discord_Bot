@@ -3,7 +3,7 @@ from discord.ui import View
 from utils.steam_opendota import *
 
 
-async def generate_search_message(image_url: str, role: discord.Role):
+async def generate_search_message(image_url: str, role: discord.Role) -> dict:
     embed = discord.Embed(
         title=":bangbang: СТАВИМ 10 ДАГОНОВ И НАЧИНАЕМ ИГРУ :bangbang:",
         color=role.color
@@ -12,7 +12,7 @@ async def generate_search_message(image_url: str, role: discord.Role):
     return {'content': role.mention, 'embed': embed}
 
 
-async def check_ip_provided(ctx, ip):
+async def check_ip_provided(ctx: discord.ApplicationContext, ip: str) -> bool:
     ru_role_id = get_rule('ROLES_IDS', 'RU')
     text = "You didn't specify the IP!"
     if ru_role_id in [y.id for y in ctx.author.roles]:
@@ -25,11 +25,11 @@ async def check_ip_provided(ctx, ip):
     return True
 
 
-def format_usernames_with_mmr(users_dict):
+def format_usernames_with_mmr(users_dict: dict):
     return '\n'.join([f'{user.global_name} [{get_mmr_from_discord(str(user.id))}]: {mark}' for user, mark in users_dict.items()])
 
 
-async def send_ready_embed(ctx, users, users_dict):
+async def send_ready_embed(ctx: discord.ApplicationContext, users, users_dict: dict):
     description = f'Игроков готово:\n\n0 / {len(users)}\n\n{format_usernames_with_mmr(users_dict)}'
     embed = discord.Embed(
         title='Монитор готовности',
@@ -40,7 +40,7 @@ async def send_ready_embed(ctx, users, users_dict):
     return await ctx.send(embed=embed)
 
 
-async def notify_users(users, reminder_embed, connect_embed, view):
+async def notify_users(users, reminder_embed, connect_embed, view: discord.ui.View):
     forbidden_users = []
     for user in users:
         if not user.bot:
@@ -73,7 +73,7 @@ class AcceptButton(View):
         await interaction.response.edit_message(view=None)
 
 
-def create_embeds(message, ip):
+def create_embeds(message, ip: str):
     message_link = f"https://discord.com/channels/{message.guild.id}/{message.channel.id}/{message.id}"
     reminder_embed = discord.Embed(
         title='Ваша игра найдена!',
@@ -89,7 +89,7 @@ def create_embeds(message, ip):
     return reminder_embed, connect_embed
 
 
-async def handle_forbidden_users(search, ctx, forbidden_users):
+async def handle_forbidden_users(search, ctx: discord.ApplicationContext, forbidden_users):
     channel_id = get_rule('CHANNELS_IDS', 'FORBIDDEN_USERS')
     forbidden_users_channel = search.bot.get_channel(channel_id)
     description = f"Couldn't send a message to the following people: {", ".join(forbidden_users)}"

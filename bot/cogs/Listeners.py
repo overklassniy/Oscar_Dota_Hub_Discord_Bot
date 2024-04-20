@@ -89,6 +89,14 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: discord.ApplicationContext, error):
+        if type(error) == commands.errors.MissingAnyRole or type(error) == commands.errors.MissingAnyRole:
+            roles_ids = list(map(int, str(error).replace("'", '').split(': ')[-1].split(' or ')))
+            roles = f''
+            for role_id in roles_ids:
+                roles += f'<@&{role_id}> / '
+            roles = roles[:-3]
+            await ctx.respond(f'You are missing the role: {roles}', ephemeral=True)
+            raise error
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
             await handle_error(self, ctx, error)
         else:

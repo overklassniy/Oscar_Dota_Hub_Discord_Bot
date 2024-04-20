@@ -11,6 +11,8 @@ from utils.basic import *
 from utils.verification_utils import *
 from utils.steam_opendota import *
 
+unverified_role_id = get_rule('ROLES_IDS', 'UNVERIFIED')
+
 
 class Verification(commands.Cog):
     def __init__(self, bot):
@@ -20,6 +22,7 @@ class Verification(commands.Cog):
     fun_commands_group = SlashCommandGroup("verification", "Команды для верификации")
 
     @fun_commands_group.command(name='verify', description="Команда для верификации")
+    @commands.has_role(unverified_role_id)
     @option("steam_url", description="Введите URL своего профиля в Steam", required=True)
     async def verify(self, ctx: discord.ApplicationContext, steam_url: str):
         ru_role_id = get_rule('ROLES_IDS', 'RU')

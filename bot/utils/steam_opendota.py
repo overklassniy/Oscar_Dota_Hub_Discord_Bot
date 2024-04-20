@@ -13,13 +13,13 @@ steamwebapi_key = os.getenv('STEAMWEBAPI-KEY')
 client_steam = Steam(steamwebapi_key)
 
 
-def steamid64_to_steamid32(commid):
+def steamid64_to_steamid32(commid: int) -> int:
     steamid64ident = 76561197960265728
-    steamidacct = int(commid) - steamid64ident
+    steamidacct = commid - steamid64ident
     return steamidacct
 
 
-def steamurl_to_steamid64(url):
+def steamurl_to_steamid64(url: str) -> int:
     if url[:35] != 'https://steamcommunity.com/profiles':
         if url[-1] == '/':
             profile_id = url.split('/')[-2]
@@ -33,13 +33,13 @@ def steamurl_to_steamid64(url):
     return steamid64
 
 
-def get_nickname(url):
+def get_nickname(url: str) -> str:
     id = steamurl_to_steamid64(url)
     response = client_steam.users.get_user_details(str(id))
     return response['player']['personaname']
 
 
-def get_realname(url):
+def get_realname(url: str) -> str:
     idd = steamurl_to_steamid64(url)
     response = client_steam.users.get_user_details(str(idd))
     try:
@@ -48,19 +48,19 @@ def get_realname(url):
         return 'no_name'
 
 
-def get_avatar(url):
-    id = steamurl_to_steamid64(url)
-    response = client_steam.users.get_user_details(str(id))
+def get_avatar(url: str) -> str:
+    profile_id = steamurl_to_steamid64(url)
+    response = client_steam.users.get_user_details(str(profile_id))
     return response['player']['avatarfull']
 
 
-def steamurl_to_steamid32(url):
+def steamurl_to_steamid32(url: str) -> int:
     steamid64 = steamurl_to_steamid64(url)
     steamid32 = steamid64_to_steamid32(steamid64)
     return steamid32
 
 
-def get_rating_score(steamid32):
+def get_rating_score(steamid32: int) -> int:
     tier_to_score = {11: 10, 12: 150, 13: 300, 14: 460, 15: 610, 21: 770, 22: 920, 23: 1080, 24: 1230, 25: 1400, 31: 1540, 32: 1700, 33: 1850,
                      34: 2000, 35: 2150, 41: 2310, 42: 2450, 43: 2610, 44: 2770, 45: 2930, 51: 3080, 52: 3230, 53: 3390, 54: 3540, 55: 3700, 61: 3850,
                      62: 4000, 63: 4150, 64: 4300, 65: 4460, 71: 4620, 72: 4820, 73: 5020, 74: 5220, 75: 5420}
@@ -79,7 +79,7 @@ def get_rating_score(steamid32):
     return solo_competitive_rank
 
 
-def get_mmr_from_discord(dsid: str):
+def get_mmr_from_discord(dsid: str) -> int:
     users = get_users()
     try:
         steam64 = users[dsid]

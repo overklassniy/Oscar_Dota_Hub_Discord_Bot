@@ -1,13 +1,17 @@
 import sys
 from random import choice
 
+import discord
 from discord import SlashCommandGroup, option
 from discord.ext import commands
 from discord.utils import get
 
 sys.path.append("..")
 from utils.basic import *
+from utils.discord_basic import *
 from utils.search_utils import *
+
+administration_roles = get_rule('ROLES_IDS', 'ADMINISTRATION')
 
 
 class Search(commands.Cog):
@@ -17,9 +21,10 @@ class Search(commands.Cog):
 
     search_commands_group = SlashCommandGroup("search", "Search related commands")
 
-    @search_commands_group.command(name="search")
-    @option("image")
-    async def search(self, ctx, image: int = 0):
+    @search_commands_group.command(name="search", description="Send search message")
+    @commands.has_any_role(*administration_roles)
+    @option("image", description="Image number attached to message")
+    async def search(self, ctx: discord.ApplicationContext, image: int = 0):
         guild = ctx.guild
         channel = ctx.channel
         if channel.id not in get_rule("CHANNELS_IDS", 'SEARCH'):
@@ -41,7 +46,12 @@ class Search(commands.Cog):
         print(f'[{get_now()}] Search message sent to {ctx.channel.name}')
 
     @commands.command()
-    async def gather(self, ctx, ip=None):
+    async def gather(self, ctx: discord.ApplicationContext, ip: str = None):
+        if not is_privileged(ctx, administration_roles):
+            print(f'[{get_now()}] No permission to perform GATHER command for {ctx.author.name} ({ctx.author.id})')
+            await ctx.respond('You do not have permission to perform this command', ephemeral=True)
+            return
+
         replied_message = ctx.message.reference
         if not await check_ip_provided(ctx, ip):
             return

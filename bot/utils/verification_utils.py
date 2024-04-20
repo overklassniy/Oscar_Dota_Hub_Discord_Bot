@@ -8,7 +8,7 @@ from utils.basic import *
 from utils.steam_opendota import *
 
 
-async def log_verification_attempt(verification, ctx, steam_url, passphrase):
+async def log_verification_attempt(verification, ctx: discord.ApplicationContext, steam_url: str, passphrase: str):
     verify_log_channel = verification.bot.get_channel(get_rule('CHANNELS_IDS', 'VERIFY_LOG'))
     embed = discord.Embed(
         title="Verification process initiated",
@@ -22,7 +22,7 @@ async def log_verification_attempt(verification, ctx, steam_url, passphrase):
     await verify_log_channel.send(embed=embed)
 
 
-async def send_verification_instructions(ctx, steam_url, passphrase):
+async def send_verification_instructions(ctx: discord.ApplicationContext, steam_url: str, passphrase: str):
     ru_role_id = get_rule('ROLES_IDS', 'RU')
     en_role_id = get_rule('ROLES_IDS', 'EN')
     if ru_role_id in [y.id for y in ctx.author.roles]:
@@ -30,7 +30,7 @@ async def send_verification_instructions(ctx, steam_url, passphrase):
     else:
         lang = en_role_id
     embed_info, embed_profile, embed_howto = create_verification_embeds(steam_url, passphrase, lang)
-    button_done = create_verification_button(passphrase, steam_url, ctx)
+    button_done = create_verification_button(ctx, passphrase, steam_url)
     first_message = await ctx.author.send(embeds=[embed_info, embed_profile, embed_howto], view=View(button_done, timeout=None))
     verify_channel_message_text = 'Please, check your DM for verification instructions.'
     if lang == ru_role_id:
@@ -39,7 +39,7 @@ async def send_verification_instructions(ctx, steam_url, passphrase):
     await verify_channel_message.delete(delay=5)
 
 
-def create_verification_embeds(steam_url, passphrase, lang, state=0):
+def create_verification_embeds(steam_url: str, passphrase: str, lang: int, state: int = 0):
     ru_role_id = get_rule('ROLES_IDS', 'RU')
     en_role_id = get_rule('ROLES_IDS', 'EN')
     if state == 0:
@@ -144,7 +144,7 @@ def create_verification_embeds(steam_url, passphrase, lang, state=0):
             return embed_deny, embed_profile_2
 
 
-def create_verification_button(passphrase, steam_url, ctx):
+def create_verification_button(ctx: discord.ApplicationContext, passphrase: str, steam_url: str):
     ru_role_id = get_rule('ROLES_IDS', 'RU')
     en_role_id = get_rule('ROLES_IDS', 'EN')
     label = 'I changed real name!'
