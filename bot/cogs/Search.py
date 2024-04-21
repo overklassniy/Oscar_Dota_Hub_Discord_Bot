@@ -6,18 +6,18 @@ from discord import SlashCommandGroup, option
 from discord.ext import commands
 from discord.utils import get
 
-sys.path.append("..")
-from utils.basic import *
-from utils.discord_basic import *
-from utils.search_utils import *
+sys.path.append("..")  # Add the parent directory to the system path to import modules from other directories.
+from utils.basic import *  # Import basic utilities.
+from utils.discord_basic import *  # Import Discord-specific utilities.
+from utils.search_utils import *  # Import search-specific utilities.
 
-administration_roles = get_rule('ROLES_IDS', 'ADMINISTRATION')
+administration_roles = get_rule('ROLES_IDS', 'ADMINISTRATION')  # Fetch administration roles for permissions.
 
 
 class Search(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        print(f'[{get_now()}] Search cog loaded')
+        self.bot = bot  # Reference to the Discord bot instance.
+        print(f'[{get_now()}] Search cog loaded')  # Log the loading of the Search cog.
 
     search_commands_group = SlashCommandGroup("search", "Search related commands")
 
@@ -39,15 +39,15 @@ class Search(commands.Cog):
             await ctx.respond(f'Wrong image number, please use a number from 1 to {len(search_images)}', ephemeral=True)
             print(f'[{get_now()}] Wrong image number for /search: {image}')
             return
-        image_url = search_images[image - 1] if image else choice(search_images)
-        message = await generate_search_message(image_url=image_url, role=role)
+        image_url = search_images[image - 1] if image else choice(search_images)  # Select an image or randomly pick one if not specified.
+        message = await generate_search_message(image_url=image_url, role=role)  # Generate the message to be sent.
         await ctx.send(**message)
         await ctx.respond('Done', ephemeral=True)
         print(f'[{get_now()}] Search message sent to {ctx.channel.name}')
 
     @commands.command()
     async def gather(self, ctx: discord.ApplicationContext, ip: str = None):
-        if not is_privileged(ctx, administration_roles):
+        if not await is_privileged(ctx, administration_roles):
             print(f'[{get_now()}] No permission to perform GATHER command for {ctx.author.name} ({ctx.author.id})')
             await ctx.respond('You do not have permission to perform this command', ephemeral=True)
             return
@@ -64,8 +64,8 @@ class Search(commands.Cog):
             if str(reaction) == target_emoji:
                 async for user in reaction.users():
                     users.append(user)
-        users = list(set(users))
-        users_dict = {user: '❌' for user in users}
+        users = list(set(users))  # Remove duplicates.
+        users_dict = {user: '❌' for user in users}  # Track which users have accepted.
 
         ready_message = await send_ready_embed(ctx, users, users_dict)
         view = AcceptButton(users, users_dict, ready_message)

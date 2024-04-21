@@ -21,10 +21,10 @@ def write_rule(section: str, key: str, value):
 
 def get_now(need_date: bool = True, need_date_only: bool = False):
     now = datetime.datetime.now()
-    if need_date:
-        return now.strftime("%d/%m/%Y %H:%M:%S")
     if need_date_only:
         return now.strftime("%d/%m/%Y")
+    if need_date:
+        return now.strftime("%d/%m/%Y %H:%M:%S")
     return now.strftime("%H:%M:%S")
 
 

@@ -40,7 +40,7 @@ class Fun(commands.Cog):
         text = f'{ctx.author} gets a random number ({number1} - {number2}): {random_number}'
         # If the user has the Russian role, respond in Russian.
         if ru_role_id in [y.id for y in ctx.author.roles]:
-            text = f'{ctx.author} получает случайное число ({number1} - {number2}): {random_number}'
+            text = f'{ctx.author} получает случайное число ({number1} - {number2}): **{random_number}**'
         print(f'[{get_now()}] {text}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the message to the channel.
 

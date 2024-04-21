@@ -6,64 +6,61 @@ import discord
 from discord import SlashCommandGroup, option
 from discord.ext import commands
 
-sys.path.append("..")
-from utils.basic import *
-from utils.verification_utils import *
-from utils.steam_opendota import *
+sys.path.append("..")  # Include the parent directory in the system path for importing modules.
+from utils.basic import *  # Import basic utility functions and constants.
+from utils.verification_utils import *  # Import verification-specific utilities.
+from utils.steam_opendota import *  # Import utilities related to Steam and OpenDota APIs.
 
-unverified_role_id = get_rule('ROLES_IDS', 'UNVERIFIED')
+unverified_role_id = get_rule('ROLES_IDS', 'UNVERIFIED')  # Fetch the role ID for unverified users.
 
 
 class Verification(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        print(f'[{get_now()}] Verification cog loaded')
+        self.bot = bot  # Store an instance of the bot.
+        print(f'[{get_now()}] Verification cog loaded')  # Log the loading of the Verification cog.
 
-    fun_commands_group = SlashCommandGroup("verification", "Команды для верификации")
+    verification_commands_group = SlashCommandGroup("verification", "Commands for user verification")
 
-    @fun_commands_group.command(name='verify', description="Команда для верификации")
-    @commands.has_role(unverified_role_id)
-    @option("steam_url", description="Введите URL своего профиля в Steam", required=True)
+    @verification_commands_group.command(name='verify', description="Command for user verification")
+    @commands.has_role(unverified_role_id)  # Restrict this command to users with the 'unverified' role.
+    @option("steam_url", description="Enter your Steam profile URL", required=True)
     async def verify(self, ctx: discord.ApplicationContext, steam_url: str):
+        # Handle the verification process.
         ru_role_id = get_rule('ROLES_IDS', 'RU')
         en_role_id = get_rule('ROLES_IDS', 'EN')
-        lang = en_role_id
-        if ru_role_id in [y.id for y in ctx.author.roles]:
-            lang = ru_role_id
+        lang = ru_role_id if ru_role_id in [y.id for y in ctx.author.roles] else en_role_id
 
         verify_channel = get_rule('CHANNELS_IDS', 'VERIFY')
-        text = f'This command only available at <#{verify_channel}>!'
-        if lang == ru_role_id:
-            text = f'Эта команда доступна только в канале <#{verify_channel}>!'
+        message_if_wrong_channel = 'This command only available at <#{verify_channel}>!' if lang == en_role_id else 'Эта команда доступна только в канале <#{verify_channel}>!'
         if ctx.channel_id != verify_channel:
+            # Ensure the command is used in the designated verification channel.
             print(f'[{get_now()}] Wrong channel for verification: {ctx.channel_id} ({ctx.channel.name})')
-            await ctx.respond(content=text, ephemeral=True)
+            await ctx.respond(content=message_if_wrong_channel, ephemeral=True)
             return
 
         await ctx.response.defer()
-        await asyncio.sleep(2)
-        passphrase = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(16))
+        await asyncio.sleep(2)  # Artificial delay to simulate processing time.
+        passphrase = ''.join(random.choice('abcdefghijklmnopqrstuvwxyz') for _ in range(16))  # Generate a random passphrase.
         print(f'[{get_now()}] Sending "verification initiated" log')
-        await log_verification_attempt(self, ctx, steam_url, passphrase)
+        await log_verification_attempt(self, ctx, steam_url, passphrase)  # Log the verification attempt.
 
         if not uri_validator(steam_url):
-            text = 'Invalid Steam profile URL.'
-            if ru_role_id in [y.id for y in ctx.author.roles]:
-                text = 'Неверная ссылка на Ваш профиль Steam.'
+            # Validate the Steam URL format.
+            message_invalid_url = 'Invalid Steam profile URL.' if lang == en_role_id else 'Неверная ссылка на Ваш профиль Steam.'
             print(f'[{get_now()}] Wrong steam profile URL: {steam_url}')
-            message = await ctx.respond(content=text)
+            message = await ctx.respond(content=message_invalid_url)
             await message.delete(delay=5)
             return
 
         try:
+            # Send verification instructions via a private message.
             print(f'[{get_now()}] Sending verification instructions to {ctx.author.name} ({ctx.author.id})')
             await send_verification_instructions(ctx, steam_url, passphrase)
         except discord.Forbidden:
-            text = 'I was unable to send you a private message. Please check your privacy settings and try again.'
-            if lang == ru_role_id:
-                text = 'Я не смог отправить Вам личное сообщение. Пожалуйста, проверьте Ваши настройки конфиденциальности и попробуйте еще раз.'
+            # Handle the case where the bot is unable to send a private message due to user privacy settings.
+            message_dm_error = 'I was unable to send you a private message. Please check your privacy settings and try again.' if lang == en_role_id else 'Я не смог отправить Вам личное сообщение. Пожалуйста, проверьте Ваши настройки конфиденциальности и попробуйте еще раз.'
             print(f"[{get_now()}] Couldn't send DM for verification")
-            message = await ctx.respond(content=text)
+            message = await ctx.respond(content=message_dm_error)
             await message.delete(delay=5)
 
 

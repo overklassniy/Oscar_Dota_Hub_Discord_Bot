@@ -23,7 +23,7 @@ async def send_start_state(listeners):
     channel = listeners.bot.get_channel(get_rule('CHANNELS_IDS', 'STATE'))
     embed = discord.Embed(
         title="The bot is running",
-        description=f'Date: {get_now(need_date_only=True)}' +
+        description=f'Date: {get_now(need_date_only=True)}\n' +
                     f'Time: `{get_now(need_date=False)}`',
         color=0x1f8b4c
     )

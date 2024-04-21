@@ -3,29 +3,32 @@ import sys
 import discord
 from discord.ext import commands
 
-sys.path.append("..")
-from cogs.Tasks import *
-from utils.basic import *
-from utils.listeners_utils import *
+sys.path.append("..")  # Include the parent directory in the system path to access other modules.
+from cogs.Tasks import *  # Import all tasks from the Tasks cog.
+from utils.basic import *  # Import utilities such as configuration fetching.
+from utils.listeners_utils import *  # Import utilities specifically tailored for listeners.
 
+# Fetch a boolean value indicating if the bot is in testing mode.
 testing = get_rule('BOOLEANS', 'TESTING')
 
 
 class Listeners(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        print(f'[{get_now()}] Listeners cog loaded')
+        self.bot = bot  # Store an instance of the bot.
+        print(f'[{get_now()}] Listeners cog loaded')  # Log the initialization of the Listeners cog.
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
+        # This listener triggers when a reaction is added to any message.
         channel_id = payload.channel_id
         user = payload.member
         message_id = payload.message_id
         channels = get_rule('CHANNELS_IDS', 'SEARCH')
-        if get_rule('BOOLEANS', 'TESTING'):
+        if testing:
             channels = get_rule('CHANNELS_IDS', 'TEST')
         if channel_id not in channels:
-            return
+            return  # Ignore reactions in channels that are not designated for listening.
+
         channel = self.bot.get_channel(channel_id)
         message = await channel.fetch_message(message_id)
         for reaction in message.reactions:
@@ -60,28 +63,26 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        # This listener handles incoming messages to restrict them to commands only in specific channels.
         channel_id = message.channel.id
-        if not channel_id:
-            return
-        commands_only_channels = get_rule('CHANNELS_IDS', 'COMMANDS_ONLY_CHANNELS')
-        if channel_id in commands_only_channels and not testing:
+        if channel_id in get_rule('CHANNELS_IDS', 'COMMANDS_ONLY_CHANNELS') and not testing:
             if message.type != discord.MessageType.application_command:
-                print(f'[{get_now()}] Deleted message "{str(message.content)}" from channel {str(message.channel.name)}')
+                print(f'[{get_now()}] Deleted message "{message.content}" from channel {message.channel.name}')
                 await message.delete()
 
     @commands.Cog.listener()
     async def on_ready(self):
+        # Log in notification and start scheduled tasks.
         print(f'[{get_now()}] Logged in as {self.bot.user.name}')
-
         Tasks.change_status.start(self)
         Tasks.auto_search.start(self)
         Tasks.check_dagons.start(self)
-
         if not testing and get_rule('BOOLEANS', 'SEND_START_STATE'):
-            await send_start_state()
+            await send_start_state(self)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ApplicationContext, error):
+        # Handle generic command errors.
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
             await handle_error(self, ctx, error)
         else:
@@ -89,12 +90,10 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: discord.ApplicationContext, error):
-        if type(error) == commands.errors.MissingAnyRole or type(error) == commands.errors.MissingAnyRole:
+        # Handle errors specific to slash commands, providing user feedback on missing roles.
+        if isinstance(error, commands.errors.MissingAnyRole):
             roles_ids = list(map(int, str(error).replace("'", '').split(': ')[-1].split(' or ')))
-            roles = f''
-            for role_id in roles_ids:
-                roles += f'<@&{role_id}> / '
-            roles = roles[:-3]
+            roles = ' / '.join(f'<@&{role_id}>' for role_id in roles_ids)
             await ctx.respond(f'You are missing the role: {roles}', ephemeral=True)
             raise error
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
