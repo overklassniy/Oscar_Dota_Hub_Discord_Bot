@@ -59,7 +59,7 @@ class Cogs(commands.Cog):
     @commands.has_any_role(*administration_roles)
     async def reload_all(self, ctx: discord.ApplicationContext):
         print(f'[{get_now()}] Reloading all cogs...')
-        for file in os.listdir("bot/cogs"):
+        for file in os.listdir(get_rule('PATHS', 'COGS')):
             if file.endswith(".py") and file != "__init__.py":
                 self.bot.reload_extension(f'cogs.{file[:-3]}')
                 await ctx.respond(f"Reloaded {file[:-3]}", ephemeral=True)

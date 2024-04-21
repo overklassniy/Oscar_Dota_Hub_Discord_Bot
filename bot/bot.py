@@ -28,7 +28,7 @@ if testing:
     prefix = get_rule('PREFIXES', 'TESTING')
 bot = Oscar(command_prefix=prefix, intents=intents)
 
-for file in os.listdir("bot/cogs"):
+for file in os.listdir(get_rule('PATHS', 'COGS')):
     if file.endswith(".py") and file != "__init__.py":
         bot.load_extension(f'cogs.{file[:-3]}')
 
