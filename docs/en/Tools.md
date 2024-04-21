@@ -30,4 +30,4 @@ maintain order and organization within the server's communication channels.
 
 For more detailed instructions on how to utilize and configure the Tools cog, refer to the source code available in the GitHub repository.
 
-[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Documentation.md)
+[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md)

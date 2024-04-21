@@ -34,4 +34,4 @@ users of all ages and can help lighten the mood in any conversation.
 For more detailed information on how to integrate or modify these fun commands, refer to the source code in the GitHub repository or contact the bot
 development team.
 
-[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Documentation.md)
+[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md)

@@ -92,7 +92,7 @@ def create_embeds(message, ip: str):
 async def handle_forbidden_users(search, ctx: discord.ApplicationContext, forbidden_users):
     channel_id = get_rule('CHANNELS_IDS', 'FORBIDDEN_USERS')
     forbidden_users_channel = search.bot.get_channel(channel_id)
-    description = f"Couldn't send a message to the following people: {", ".join(forbidden_users)}"
+    description = f"Couldn't send a message to the following people: {', '.join(forbidden_users)}"
     embed = discord.Embed(title='Error sending the readiness message', description=description)
     await forbidden_users_channel.send(embed=embed)
     print(f'[{get_now()}] {description}')

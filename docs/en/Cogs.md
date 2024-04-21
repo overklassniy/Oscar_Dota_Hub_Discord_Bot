@@ -50,4 +50,4 @@ appropriately set to prevent unauthorized use of these powerful commands.
 For more detailed information on setting up and managing cogs, refer to the bot's main documentation or the source code located in the GitHub
 repository.
 
-[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Documentation.md)
+[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md)

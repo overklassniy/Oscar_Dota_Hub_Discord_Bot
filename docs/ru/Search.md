@@ -42,4 +42,4 @@
 
 Для получения более подробной информации о настройке и расширении возможностей модуля Search обратитесь к исходному коду бота в репозитории GitHub.
 
-[Вернуться к основной документации](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/ru/Документация.md)
+[Вернуться к основной документации](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/ru/Документация.md)

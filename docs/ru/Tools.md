@@ -31,4 +31,4 @@
 Для получения более подробных инструкций о том, как использовать и настроить модуль Tools, обратитесь к исходному коду, доступному в репозитории
 GitHub.
 
-[Вернуться к основной документации](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/ru/Документация.md)
+[Вернуться к основной документации](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/ru/Документация.md)

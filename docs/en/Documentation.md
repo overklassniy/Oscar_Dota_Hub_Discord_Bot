@@ -12,22 +12,22 @@ detailed documentation.
 ### Cogs
 
 - **Cogs** - Manages the loading, unloading, and reloading of other cogs dynamically.
-    - [Cogs Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Cogs.md)
+    - [Cogs Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Cogs.md)
 
 - **Fun** - Provides commands for fun interactions such as rolling a dice or flipping a coin.
-    - [Fun Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Fun.md)
+    - [Fun Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Fun.md)
 
 - **Patch** - Handles requests and management of game patches.
-    - [Patch Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Patch.md)
+    - [Patch Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Patch.md)
 
 - **Search** - Provides functionality related to searching and responding with images or predefined text.
-    - [Search Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Search.md)
+    - [Search Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Search.md)
 
 - **Tools** - Offers utility commands such as moving messages from one channel to another.
-    - [Tools Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Tools.md)
+    - [Tools Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Tools.md)
 
 - **Verification** - Manages the verification process for users, linking Discord accounts with external profiles such as Steam.
-    - [Verification Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Verification.md)
+    - [Verification Documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Verification.md)
 
 ## Additional Information
 

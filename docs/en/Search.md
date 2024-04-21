@@ -40,4 +40,4 @@ responsiveness. It supports a wide range of activities from simple searches to o
 
 For more detailed information on configuring and extending the capabilities of the Search cog, refer to the bot's source code in the GitHub repository.
 
-[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Documentation.md)
+[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md)

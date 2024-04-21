@@ -55,4 +55,4 @@ maintaining the relevance and functionality of game-related features within the 
 
 For detailed instructions on how to utilize and configure the Patch cog, refer to the source code available in the GitHub repository.
 
-[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Documentation.md)
+[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md)

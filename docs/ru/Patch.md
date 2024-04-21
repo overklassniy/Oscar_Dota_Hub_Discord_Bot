@@ -55,4 +55,4 @@
 Для получения подробной информации о настройке и управлении процессом запроса патчей, включая решение общих проблем, обратитесь к исходному коду в
 репозитории GitHub.
 
-[Вернуться к основной документации](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/ru/Документация.md)
+[Вернуться к основной документации](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/ru/Документация.md)

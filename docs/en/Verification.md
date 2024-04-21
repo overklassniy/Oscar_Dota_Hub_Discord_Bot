@@ -37,4 +37,4 @@ integrates with external APIs to verify the authenticity of provided links and p
 For detailed instructions on setting up and managing the verification process, including troubleshooting common issues, refer to the bot's source code
 in the GitHub repository.
 
-[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/docs/en/Documentation.md)
+[Back to main documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md)
