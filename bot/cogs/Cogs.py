@@ -14,7 +14,7 @@ administration_roles = get_rule('ROLES_IDS', 'ADMINISTRATION')[:2]
 
 class Cogs(commands.Cog):
     def __init__(self, bot):
-        print(f'[{get_now()}] Cogs.md cog loaded')  # Log when the Cogs.md cog is fully loaded.
+        print(f'[{get_now()}] Cogs cog loaded')  # Log when the Cogs.md cog is fully loaded.
         self.bot = bot  # Store the bot instance within the class for further use.
 
     # Create a group for slash commands related to cog management.
