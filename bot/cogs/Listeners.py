@@ -76,6 +76,7 @@ class Listeners(commands.Cog):
         # Log in notification and start scheduled tasks.
         print(f'[{get_now()}] Logged in as {self.bot.user.name}')
         Tasks.change_status.start(self)
+        Tasks.clear_search_channels.start(self)
         Tasks.auto_search.start(self)
         Tasks.check_dagons.start(self)
         if not testing and get_rule('BOOLEANS', 'SEND_START_STATE'):
