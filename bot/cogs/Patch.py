@@ -117,7 +117,7 @@ class Patch(commands.Cog):
             return
         tdate = date.replace('\t', ' ')
         max_timestamp = datetime.datetime.strptime(tdate, "%d %B %Y %a %H:M").replace(tzinfo=datetime.timezone.utc).timestamp()
-        pre_manifests = pd.read_pickle('data/manifests.pkl')
+        pre_manifests = pd.read_pickle(get_rule('PATHS', 'MANIFESTS'))
         pre_manifests['TimeDiff'] = max_timestamp - pre_manifests['Timestamp']
         pre_manifests.loc[pre_manifests['TimeDiff'] < 0, 'TimeDiff'] = np.nan
         pre_manifests = pre_manifests.dropna()

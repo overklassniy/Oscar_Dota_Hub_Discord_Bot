@@ -4,7 +4,8 @@ from urllib.parse import urlparse
 
 
 def get_config() -> dict:
-    rules = json.load(open('bot/config.json', 'r'))
+
+    rules = json.load(open("bot/config.json", 'r'))
     return rules
 
 
@@ -15,7 +16,7 @@ def get_rule(section: str, key: str):
 def write_rule(section: str, key: str, value):
     rules = get_config()
     rules[section][key] = value
-    json.dump(rules, open('/bot/config.json', 'w'))
+    json.dump(rules, open(get_rule('PATHS', 'CONFIG'), 'w'))
     return rules
 
 
@@ -42,12 +43,12 @@ def uri_validator(url: str):
 
 
 def write_users(data: dict):
-    with open('data/users.json', 'w', encoding='utf-8') as file:
+    with open(get_rule('PATHS', 'USERS'), 'w', encoding='utf-8') as file:
         json.dump(data, file)
 
 
 def get_users() -> dict:
-    with open('data/users.json', 'r', encoding='utf-8') as file:
+    with open(get_rule('PATHS', 'USERS'), 'r', encoding='utf-8') as file:
         content = file.read()
         unpacked_data = json.loads(content)
     return unpacked_data

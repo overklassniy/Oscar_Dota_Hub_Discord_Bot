@@ -37,7 +37,7 @@ def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
 
 
 def get_patches_info() -> dict:
-    patches_info = json.load(open('data/patches_info.json', 'r'))
+    patches_info = json.load(open(get_rule('PATHS', 'PATCHES_INFO'), 'r'))
     return patches_info
 
 
@@ -46,7 +46,7 @@ def add_ready_patch(patch_number: str):
     ready_patches = patches_info['READY']
     ready_patches.append(patch_number)
     patches_info['READY'] = ready_patches
-    json.dump(patches_info, open('data/patches_info.json', 'w'))
+    json.dump(patches_info, open(get_rule('PATHS', 'PATCHES_INFO'), 'w'))
     return f'Wrote {patch_number} to READY'
 
 
@@ -55,7 +55,7 @@ def add_abandoned_patch(patch_number: str):
     ready_patches = patches_info['ABANDONED']
     ready_patches.append(patch_number)
     patches_info['ABANDONED'] = ready_patches
-    json.dump(patches_info, open('data/patches_info.json', 'w'))
+    json.dump(patches_info, open(get_rule('PATHS', 'PATCHES_INFO'), 'w'))
     return f'Wrote {patch_number} to ABANDONED'
 
 
@@ -71,7 +71,7 @@ def add_requested_patch(request_id, patch_number: str):
     requested_patches = patches_info['REQUESTED']
     requested_patches[request_id] = patch_number
     patches_info['REQUESTED'] = requested_patches
-    json.dump(patches_info, open('data/patches_info.json', 'w'))
+    json.dump(patches_info, open(get_rule('PATHS', 'PATCHES_INFO'), 'w'))
     return f'Wrote {patch_number} to REQUESTED (id = {request_id})'
 
 
@@ -81,7 +81,7 @@ def delete_requested_patch(request_id):
     patch_number = requested_patches[request_id]
     del requested_patches[request_id]
     patches_info['REQUESTED'] = requested_patches
-    json.dump(patches_info, open('data/patches_info.json', 'w'))
+    json.dump(patches_info, open(get_rule('PATHS', 'PATCHES_INFO'), 'w'))
     return f'Deleted {patch_number} from REQUESTED (id = {request_id})'
 
 
