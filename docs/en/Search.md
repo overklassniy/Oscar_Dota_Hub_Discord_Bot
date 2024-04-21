@@ -27,7 +27,7 @@ It's designed to support moderators and users in creating engaging and dynamic c
 - **Usage**: `!gather <ip>`
 - **Permissions Required**: Administrator / Moderator / Helper roles
 - **Details**:
-    - `ip`: An optional parameter specifying the IP address of an event server, which is useful for gaming communities.
+    - `ip`: Required parameter specifying the IP address of an event server, which is useful for gaming communities.
     - This command collects users who reacted with a specific emoji and prepares a list or message indicating their readiness or interest.
     - Provides a method for organizers to quickly assemble participants and disseminate event details effectively.
 
