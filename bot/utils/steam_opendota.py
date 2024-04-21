@@ -82,7 +82,7 @@ def get_rating_score(steamid32: int) -> int:
 def get_mmr_from_discord(dsid: str) -> int:
     users = get_users()
     try:
-        steam64 = users[dsid]
+        steam64 = int(users[dsid])
     except Exception as e:
         return 10
     score = get_rating_score(steamid64_to_steamid32(steam64))

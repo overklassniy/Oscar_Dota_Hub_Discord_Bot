@@ -13,7 +13,7 @@ enhance the bot's functionality and server management.
 ### Move
 
 - **Description**: Moves a specified message to another channel.
-- **Usage**: `/move <channel>`
+- **Usage**: `!move #<channel>`
 - **Permissions Required**: Administrator / Moderator / Helper roles
 - **Details**:
     - `channel`: The target channel where the message will be moved.

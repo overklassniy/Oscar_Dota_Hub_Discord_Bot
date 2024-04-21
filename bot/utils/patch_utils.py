@@ -13,7 +13,7 @@ def is_allowed_patch_string(s: str) -> bool:
 def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
     ru_role_id = get_rule('ROLES_IDS', 'RU')
     en_role_id = get_rule('ROLES_IDS', 'EN')
-    if ru_role_id in [y.id for y in ctx.author.roles]:
+    if ru_role_id in [y.id for y in ctx.user.roles]:
         lang = ru_role_id
     else:
         lang = en_role_id

@@ -46,5 +46,5 @@ async def handle_error(listeners, ctx: discord.ApplicationContext, error):
     print(f'[{time}] Sending error message')
     await channel.send(embed=embed)
     print(error)
-    message = await ctx.respond('An error occurred. Please try again.')
+    message = await ctx.send('An error occurred. Please try again.')
     await message.delete(delay=5)

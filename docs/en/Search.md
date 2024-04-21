@@ -24,7 +24,7 @@ It's designed to support moderators and users in creating engaging and dynamic c
 ### Gather
 
 - **Description**: Gathers users for an event based on their reactions to a message.
-- **Usage**: `/gather <ip>`
+- **Usage**: `!gather <ip>`
 - **Permissions Required**: Administrator / Moderator / Helper roles
 - **Details**:
     - `ip`: An optional parameter specifying the IP address of an event server, which is useful for gaming communities.

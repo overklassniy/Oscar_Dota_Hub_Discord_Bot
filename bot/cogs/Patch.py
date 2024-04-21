@@ -27,14 +27,14 @@ class Patch(commands.Cog):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.add_item(
-                discord.ui.InputText(label="Enter the patch number and letter, separated by a dot",
+                discord.ui.InputText(label="Enter the number and letter separated by dot",
                                      placeholder='Example: 7.23b', min_length=4, max_length=5, required=True))
 
         async def callback(self, ctx: discord.Interaction):
             # Handle the submission of the modal.
             ru_role_id = get_rule('ROLES_IDS', 'RU')
             en_role_id = get_rule('ROLES_IDS', 'EN')
-            lang = ru_role_id if ru_role_id in [y.id for y in ctx.author.roles] else en_role_id
+            lang = ru_role_id if ru_role_id in [y.id for y in ctx.user.roles] else en_role_id
             patch_number = self.children[0].value.lower()
             if is_allowed_patch_string(patch_number) and patch_number < get_rule('STRINGS', 'MAX_PATCH') and is_patch_new(patch_number, ctx)[0]:
                 embed = discord.Embed(color=discord.Color.yellow())

@@ -1,3 +1,4 @@
+import re
 import sys
 
 import discord
@@ -91,8 +92,11 @@ class Listeners(commands.Cog):
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx: discord.ApplicationContext, error):
         # Handle errors specific to slash commands, providing user feedback on missing roles.
-        if isinstance(error, commands.errors.MissingAnyRole):
-            roles_ids = list(map(int, str(error).replace("'", '').split(': ')[-1].split(' or ')))
+        if isinstance(error, commands.errors.MissingAnyRole) or isinstance(error, commands.errors.MissingRole):
+            if isinstance(error, commands.errors.MissingRole):
+                roles_ids = list(map(int, re.findall(r'\d+', str(error))))
+            else:
+                roles_ids = list(map(int, str(error).replace("'", '').split(': ')[-1].split(' or ')))
             roles = ' / '.join(f'<@&{role_id}>' for role_id in roles_ids)
             await ctx.respond(f'You are missing the role: {roles}', ephemeral=True)
             raise error
