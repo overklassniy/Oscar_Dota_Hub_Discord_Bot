@@ -31,7 +31,7 @@ class Verification(commands.Cog):
         lang = ru_role_id if ru_role_id in [y.id for y in ctx.author.roles] else en_role_id
 
         verify_channel = get_rule('CHANNELS_IDS', 'VERIFY')
-        message_if_wrong_channel = 'This command only available at <#{verify_channel}>!' if lang == en_role_id else 'Эта команда доступна только в канале <#{verify_channel}>!'
+        message_if_wrong_channel = f'This command only available at <#{verify_channel}>!' if lang == en_role_id else f'Эта команда доступна только в канале <#{verify_channel}>!'
         if ctx.channel_id != verify_channel:
             # Ensure the command is used in the designated verification channel.
             print(f'[{get_now()}] Wrong channel for verification: {ctx.channel_id} ({ctx.channel.name})')
