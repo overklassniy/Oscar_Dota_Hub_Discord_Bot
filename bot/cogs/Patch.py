@@ -110,13 +110,15 @@ class Patch(commands.Cog):
     @option('number', description="The number / name of the patch from SteamDB", required=False)
     async def create_script(self, ctx: discord.ApplicationContext, date: str, number: str = 'UNKNOWN'):
         # Command to create a script for downloading a patch via SteamCMD based on the provided details.
+        ru_role_id = get_rule('ROLES_IDS', 'RU')
+        en_role_id = get_rule('ROLES_IDS', 'EN')
         auto_steamcmd_scripts = get_rule('CHANNELS_IDS', 'AUTO_STEAMCMD_SCRIPTS')
         if ctx.channel_id not in [auto_steamcmd_scripts] + get_rule('CHANNELS_IDS', 'TEST'):
             print(f'[{get_now()}] {ctx.author.name} ({ctx.author.id}) tried to /create_script in channel: {ctx.channel_id}')
             await ctx.respond(f'Please, use /create_script in <#{auto_steamcmd_scripts}> channel.', ephemeral=True)
             return
         tdate = date.replace('\t', ' ')
-        max_timestamp = datetime.datetime.strptime(tdate, "%d %B %Y %a %H:M").replace(tzinfo=datetime.timezone.utc).timestamp()
+        max_timestamp = datetime.datetime.strptime(tdate, "%d %B %Y %a %H:%M").replace(tzinfo=datetime.timezone.utc).timestamp()
         pre_manifests = pd.read_pickle(get_rule('PATHS', 'MANIFESTS'))
         pre_manifests['TimeDiff'] = max_timestamp - pre_manifests['Timestamp']
         pre_manifests.loc[pre_manifests['TimeDiff'] < 0, 'TimeDiff'] = np.nan
