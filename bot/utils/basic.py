@@ -1,10 +1,9 @@
 import datetime
 import json
-from urllib.parse import urlparse
+import re
 
 
 def get_config() -> dict:
-
     rules = json.load(open("bot/config.json", 'r'))
     return rules
 
@@ -34,12 +33,19 @@ def is_allowed_string(s: str, allowed_string: str):
     return set(s).issubset(allowed_chars)
 
 
-def uri_validator(url: str):
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc])
-    except AttributeError:
-        return False
+def uri_validator(url: str) -> bool:
+    patterns = [
+        r'^https://steamcommunity\.com/profiles/[0-9]+/$',
+        r'^https://steamcommunity\.com/id/.+/$',
+        r'^https://steamcommunity\.com/profiles/[0-9]+$',
+        r'^http://steamcommunity\.com/profiles/[0-9]+/$',
+        r'^http://steamcommunity\.com/id/.+/$',
+        r'^http://steamcommunity\.com/profiles/[0-9]+$'
+    ]
+
+    if any(re.match(pattern, url) for pattern in patterns):
+        return True
+    return False
 
 
 def write_users(data: dict):
