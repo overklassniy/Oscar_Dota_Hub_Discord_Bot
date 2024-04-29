@@ -59,7 +59,8 @@ class Fun(commands.Cog):
         await ctx.response.send_message(content=text)  # Send the response.
 
     @fun_commands_group.command(name='tip', description="Tip a member.")
-    async def tip(self, ctx: discord.ApplicationContext, member: discord.Option(discord.SlashCommandOptionType.mentionable, name="member", description="Member to tip.", required=True)):
+    async def tip(self, ctx: discord.ApplicationContext,
+                  member: discord.Option(discord.SlashCommandOptionType.mentionable, name="member", description="Member to tip.", required=True)):
         ru_role_id = get_rule('ROLES_IDS', 'RU')
         if not isinstance(member, discord.Member):
             incorrect_member_text = 'Incorrect member.'
@@ -104,7 +105,8 @@ class Fun(commands.Cog):
         resize_image_if_small(avatar_path_1)
         resize_image_if_small(avatar_path_2)
 
-        create_tip_image(name_1=name_1, name_2=name_2, avatar_path_1=avatar_path_1, avatar_path_2=avatar_path_2, text_color_1=rgb_color_1, text_color_2=rgb_color_2, output_path=tip_path)
+        create_tip_image(name_1=name_1, name_2=name_2, avatar_path_1=avatar_path_1, avatar_path_2=avatar_path_2, text_color_1=rgb_color_1,
+                         text_color_2=rgb_color_2, output_path=tip_path)
 
         text = f'{ctx.author.mention} TIPPED {member.mention}!'
         if ru_role_id in [y.id for y in member.roles]:

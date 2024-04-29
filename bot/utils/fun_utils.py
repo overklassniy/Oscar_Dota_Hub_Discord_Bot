@@ -1,5 +1,4 @@
 import cv2
-import imutils
 import requests
 from utils.basic import *
 
