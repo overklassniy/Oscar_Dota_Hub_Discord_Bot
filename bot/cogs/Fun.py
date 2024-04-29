@@ -87,13 +87,13 @@ class Fun(commands.Cog):
             return
 
         name_1 = ctx.author.global_name
-        rgb_color_1 = ctx.author.color.to_rgb() + tuple([255])
+        rgb_color_1 = ctx.author.color.to_rgb()[::-1] + tuple([255])
         avatar_url_1 = ctx.author.avatar.url
         avatar_url256_1 = avatar_url_1[:-13] + 'png?size=256'
         id1 = ctx.author.id
 
         name_2 = member.global_name
-        rgb_color_2 = member.color.to_rgb() + tuple([255])
+        rgb_color_2 = member.color.to_rgb()[::-1] + tuple([255])
         avatar_url_2 = member.avatar.url
         avatar_url256_2 = avatar_url_2[:-13] + 'png?size=256'
         id2 = member.id
