@@ -30,14 +30,14 @@ class Tasks(commands.Cog):
         for channel in search_channels:
             await clear_channel(self, channel)
 
-    @tasks.loop(seconds=15)
+    @tasks.loop(seconds=55)
     async def auto_search(self):
         # Automatically send search prompts in search channels at set intervals.
         search_channels = get_rule('CHANNELS_IDS', 'SEARCH')
         for channel in search_channels:
             await send_search(self, channel)
 
-    @tasks.loop(seconds=180)
+    @tasks.loop(seconds=600)
     async def check_dagons(self):
         # Check for messages in search channels that have reached a threshold number of reactions.
         search_channels = get_rule('CHANNELS_IDS', 'SEARCH')

@@ -7,6 +7,7 @@ from discord.ext import commands
 
 sys.path.append("..")  # Modify the system path to include the parent directory for module access.
 from utils.basic import *  # Import utilities from basic.py which includes functions like get_rule().
+from utils.fun_utils import *  # Import utilities from fun_utils.py which includes functions like get_rule().
 
 
 class Fun(commands.Cog):
@@ -56,6 +57,59 @@ class Fun(commands.Cog):
             text = f'{ctx.author} подбрасывает монетку: {random_side}'
         print(f'[{get_now()}] {text}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the response.
+
+    @fun_commands_group.command(name='tip', description="Tip a member.")
+    async def tip(self, ctx: discord.ApplicationContext, member: discord.Option(discord.SlashCommandOptionType.mentionable, name="member", description="Member to tip.", required=True)):
+        ru_role_id = get_rule('ROLES_IDS', 'RU')
+        if not isinstance(member, discord.Member):
+            incorrect_member_text = 'Incorrect member.'
+            print(f'[{get_now()}] {incorrect_member_text} Type: {type(member)}')
+            if ru_role_id in [y.id for y in ctx.author.roles]:
+                incorrect_member_text = 'Неправильный участник'
+            await ctx.respond(incorrect_member_text, ephemeral=True)
+            return
+
+        if member.id == ctx.author.id:
+            not_yourself_text = 'You can\'t tip yourself.'
+            print(f'[{get_now()}] {ctx.author.id} tried to tip himself.')
+            if ru_role_id in [y.id for y in ctx.author.roles]:
+                not_yourself_text = 'Вы не можете поблагодарить себя.'
+            await ctx.respond(not_yourself_text, ephemeral=True)
+            return
+
+        if member.bot:
+            not_bot_text = 'You can\'t tip bots.'
+            print(f'[{get_now()}] {ctx.author.id} tried to tip bot: {member}.')
+            if ru_role_id in [y.id for y in ctx.author.roles]:
+                not_bot_text = 'Вы не можете поблагодарить бота.'
+            await ctx.respond(not_bot_text, ephemeral=True)
+            return
+
+        name_1 = ctx.author.global_name
+        rgb_color_1 = ctx.author.color.to_rgb() + tuple([255])
+        avatar_url_1 = ctx.author.avatar.url
+        avatar_url256_1 = avatar_url_1[:-13] + 'png?size=256'
+        id1 = ctx.author.id
+
+        name_2 = member.global_name
+        rgb_color_2 = member.color.to_rgb() + tuple([255])
+        avatar_url_2 = member.avatar.url
+        avatar_url256_2 = avatar_url_2[:-13] + 'png?size=256'
+        id2 = member.id
+
+        avatar_path_1 = download_image(avatar_url256_1, f'temp/avatar_{id1}.png')
+        avatar_path_2 = download_image(avatar_url256_2, f'temp/avatar_{id2}.png')
+        tip_path = f'temp/tip_{id1}_{id2}.png'
+
+        resize_image_if_small(avatar_path_1)
+        resize_image_if_small(avatar_path_2)
+
+        create_tip_image(name_1=name_1, name_2=name_2, avatar_path_1=avatar_path_1, avatar_path_2=avatar_path_2, text_color_1=rgb_color_1, text_color_2=rgb_color_2, output_path=tip_path)
+
+        text = f'{ctx.author.mention} TIPPED {member.mention}!'
+        if ru_role_id in [y.id for y in member.roles]:
+            text = f'{ctx.author.mention} ХВАЛИТ {member.mention}!'
+        await ctx.respond(content=text, file=discord.File(tip_path, 'tip.png'))
 
 
 # Function to add this cog to the bot.

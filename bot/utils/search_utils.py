@@ -47,7 +47,7 @@ async def notify_users(users, reminder_embed, connect_embed, view: discord.ui.Vi
             try:
                 await user.send(embeds=[reminder_embed, connect_embed], view=view)
             except discord.Forbidden:
-                forbidden_users.append(user.name)
+                forbidden_users.append(f'<@{user.id}>')
     return forbidden_users
 
 
