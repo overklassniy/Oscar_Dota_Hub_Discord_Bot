@@ -12,6 +12,7 @@ from utils.tasks_utils import *  # Import utilities specific to task handling.
 # Define a cycling iterator for the bot status updates.
 status = cycle(copy(get_rule('STRINGS', 'STATUS')))
 
+last_file_position = 0
 
 class Tasks(commands.Cog):
     def __init__(self, bot):
@@ -49,7 +50,7 @@ class Tasks(commands.Cog):
             message_id = messagef[0].id
             message = await channel.fetch_message(message_id)
             total_reactions = sum(reaction.count for reaction in message.reactions)  # Sum all reactions on the message.
-            if total_reactions >= 6:
+            if total_reactions >= get_rule('INTEGERS', 'DAGONS_FOR_NOTIFY'):
                 # Send a notification if the total number of reactions reaches a threshold.
                 embed = discord.Embed(
                     title=f"{total_reactions} dagons!",
@@ -59,6 +60,15 @@ class Tasks(commands.Cog):
                 )
                 dagons_channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'DAGONS_NOTIFICATION'))
                 await dagons_channel.send(message.jump_url, embed=embed)  # Send an embed with the message link.
+
+    @tasks.loop(seconds=180)
+    async def send_log_updates(self):
+        global last_file_position
+        channel = self.bot.get_channel(get_rule('CHANNELS_IDS', 'CONSOLE'))
+        if channel:  # Проверяем, что канал существует
+            new_lines, last_file_position = read_new_log_lines(get_latest_log_file(), last_file_position)
+            if new_lines:  # Если есть новые строки, отправляем их в канал
+                await channel.send(f"```{''.join(new_lines)}```")
 
 
 def setup(bot):

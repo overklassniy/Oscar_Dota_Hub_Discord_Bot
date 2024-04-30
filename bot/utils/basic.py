@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+import os
 
 
 def get_config() -> dict:
@@ -58,3 +59,14 @@ def get_users() -> dict:
         content = file.read()
         unpacked_data = json.loads(content)
     return unpacked_data
+
+
+def get_latest_log_file(logs_directory: str = 'logs') -> str:
+    # Получаем список всех файлов в директории logs
+    log_files = [f for f in os.listdir(logs_directory) if f.startswith('log_') and f.endswith('.txt')]
+
+    # Преобразуем имена файлов в формат datetime и сортируем
+    log_files.sort(key=lambda x: datetime.datetime.strptime(x, 'log_%d%m%Y_%H%M%S.txt'), reverse=True)
+
+    # Возвращаем самый новый файл
+    return logs_directory + '/' + log_files[0] if log_files else None

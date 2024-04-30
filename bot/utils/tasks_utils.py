@@ -52,3 +52,11 @@ async def generate_search_message(image_url: str, role: discord.Role):
     )
     embed.set_image(url=image_url)
     return {'content': role.mention, 'embed': embed}
+
+
+def read_new_log_lines(file_path: str, last_position: int) -> tuple:
+    with open(file_path, 'r', encoding='utf-8') as file:
+        file.seek(last_position)
+        new_lines = file.readlines()
+        last_position = file.tell()
+    return new_lines, last_position

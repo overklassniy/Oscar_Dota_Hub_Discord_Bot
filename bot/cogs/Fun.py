@@ -38,10 +38,10 @@ class Fun(commands.Cog):
             number1, number2 = number2, number1
 
         random_number = randint(number1, number2)  # Generate a random number in the range.
-        text = f'{ctx.author} gets a random number ({number1} - {number2}): {random_number}'
+        text = f'{ctx.author.mention} gets a random number ({number1} - {number2}): {random_number}'
         # If the user has the Russian role, respond in Russian.
         if ru_role_id in [y.id for y in ctx.author.roles]:
-            text = f'{ctx.author} получает случайное число ({number1} - {number2}): **{random_number}**'
+            text = f'{ctx.author.mention} получает случайное число ({number1} - {number2}): **{random_number}**'
         print(f'[{get_now()}] {text}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the message to the channel.
 
@@ -51,10 +51,10 @@ class Fun(commands.Cog):
         ru_role_id = get_rule('ROLES_IDS', 'RU')  # Get the ID for Russian role.
         coin_sides = ['***РЕШКА***', '***ОРЁЛ***']  # Options for coin sides in Russian for authenticity.
         random_side = choice(coin_sides)  # Randomly choose between the two sides.
-        text = f'{ctx.author} flips a coin: {random_side}'
+        text = f'{ctx.author.mention} flips a coin: {random_side}'
         # Customize the response for users with the Russian role.
         if ru_role_id in [y.id for y in ctx.author.roles]:
-            text = f'{ctx.author} подбрасывает монетку: {random_side}'
+            text = f'{ctx.author.mention} подбрасывает монетку: {random_side}'
         print(f'[{get_now()}] {text}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the response.
 
@@ -109,6 +109,7 @@ class Fun(commands.Cog):
                          text_color_2=rgb_color_2, output_path=tip_path)
 
         text = f'{ctx.author.mention} TIPPED {member.mention}!'
+        print(f'[{get_now()}] ')
         if ru_role_id in [y.id for y in member.roles]:
             text = f'{ctx.author.mention} ХВАЛИТ {member.mention}!'
         await ctx.respond(content=text, file=discord.File(tip_path, 'tip.png'))

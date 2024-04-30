@@ -79,6 +79,8 @@ class Listeners(commands.Cog):
         Tasks.clear_search_channels.start(self)
         Tasks.auto_search.start(self)
         Tasks.check_dagons.start(self)
+        if not testing:
+            Tasks.send_log_updates.start(self)
         if not testing and get_rule('BOOLEANS', 'SEND_START_STATE'):
             await send_start_state(self)
 
