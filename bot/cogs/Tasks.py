@@ -14,6 +14,7 @@ status = cycle(copy(get_rule('STRINGS', 'STATUS')))
 
 last_file_position = 0
 
+
 class Tasks(commands.Cog):
     def __init__(self, bot):
         self.bot = bot  # Reference to the Discord bot instance.

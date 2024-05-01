@@ -1,7 +1,7 @@
 import datetime
 import json
-import re
 import os
+import re
 
 
 def get_config() -> dict:

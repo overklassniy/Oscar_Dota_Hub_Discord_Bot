@@ -38,11 +38,11 @@ class Fun(commands.Cog):
             number1, number2 = number2, number1
 
         random_number = randint(number1, number2)  # Generate a random number in the range.
-        text = f'{ctx.author.mention} gets a random number ({number1} - {number2}): {random_number}'
+        text = f'{ctx.author.mention} gets a random number ({number1} - {number2}): **{random_number}**'
         # If the user has the Russian role, respond in Russian.
         if ru_role_id in [y.id for y in ctx.author.roles]:
             text = f'{ctx.author.mention} получает случайное число ({number1} - {number2}): **{random_number}**'
-        print(f'[{get_now()}] {text}')  # Log the action.
+        print(f'[{get_now()}] {ctx.author.global_name} ({ctx.author.id}) gets a random number ({number1} - {number2}): {random_number}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the message to the channel.
 
     # Slash command to simulate flipping a coin.
@@ -55,7 +55,7 @@ class Fun(commands.Cog):
         # Customize the response for users with the Russian role.
         if ru_role_id in [y.id for y in ctx.author.roles]:
             text = f'{ctx.author.mention} подбрасывает монетку: {random_side}'
-        print(f'[{get_now()}] {text}')  # Log the action.
+        print(f'[{get_now()}] {ctx.author.global_name} ({ctx.author.id}) flips a coin {random_side.replace('*', '')}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the response.
 
     @fun_commands_group.command(name='tip', description="Tip a member.")
@@ -108,8 +108,8 @@ class Fun(commands.Cog):
         create_tip_image(name_1=name_1, name_2=name_2, avatar_path_1=avatar_path_1, avatar_path_2=avatar_path_2, text_color_1=rgb_color_1,
                          text_color_2=rgb_color_2, output_path=tip_path)
 
+        print(f'[{get_now()}] {name_1} ({id1} tipped {name_2} ({id2})')
         text = f'{ctx.author.mention} TIPPED {member.mention}!'
-        print(f'[{get_now()}] ')
         if ru_role_id in [y.id for y in member.roles]:
             text = f'{ctx.author.mention} ХВАЛИТ {member.mention}!'
         await ctx.respond(content=text, file=discord.File(tip_path, 'tip.png'))

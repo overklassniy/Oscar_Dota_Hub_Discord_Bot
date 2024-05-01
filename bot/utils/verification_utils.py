@@ -162,9 +162,9 @@ def create_verification_button(ctx: discord.ApplicationContext, passphrase: str,
             verified_role = discord.utils.get(ctx.guild.roles, id=get_rule('ROLES_IDS', 'VERIFIED'))
             unverified_role = discord.utils.get(ctx.guild.roles, id=get_rule('ROLES_IDS', 'UNVERIFIED'))
             member = ctx.guild.get_member(button_interaction.user.id)
-            print(f'[{get_now()}] Added "Verified" role to {ctx.author.name} ({ctx.author.id}).')
+            print(f'[{get_now()}] Added "Verified" role to {ctx.author.name} ({ctx.author.id})')
             await member.add_roles(verified_role)
-            print(f'[{get_now()}] Removed "Not verified" role from {ctx.author.name} ({ctx.author.id}).')
+            print(f'[{get_now()}] Removed "Not verified" role from {ctx.author.name} ({ctx.author.id})')
             await member.remove_roles(unverified_role)
             lang = en_role_id
             if ru_role_id in [y.id for y in ctx.author.roles]:
