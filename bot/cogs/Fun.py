@@ -55,7 +55,7 @@ class Fun(commands.Cog):
         # Customize the response for users with the Russian role.
         if ru_role_id in [y.id for y in ctx.author.roles]:
             text = f'{ctx.author.mention} подбрасывает монетку: {random_side}'
-        print(f'[{get_now()}] {ctx.author.global_name} ({ctx.author.id}) flips a coin {random_side.replace('*', '')}')  # Log the action.
+        print(f'[{get_now()}] {ctx.author.global_name} ({ctx.author.id}) flips a coin {random_side.replace("*", "")}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the response.
 
     @fun_commands_group.command(name='tip', description="Tip a member.")
