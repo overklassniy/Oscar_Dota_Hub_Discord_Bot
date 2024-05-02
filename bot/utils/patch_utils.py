@@ -20,6 +20,7 @@ def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
     patches_info = get_patches_info()
     done = patches_info['READY']
     abandoned = patches_info['ABANDONED']
+    requested = patches_info['REQUESTED'].values()
     if patch_number in abandoned:
         text1 = f'The {patch_number} is ABANDONED'
         if lang == ru_role_id:
@@ -30,10 +31,15 @@ def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
         if lang == ru_role_id:
             text2 = f'{patch_number} уже СДЕЛАН'
         return False, text2
-    text3 = f'The {patch_number} is NEW'
+    if patch_number in requested:
+        text3 = f'The {patch_number} is REQUESTED'
+        if lang == ru_role_id:
+            text3 = f'{patch_number} уже ЗАПРОШЕН'
+        return False, text3
+    text4 = f'The {patch_number} is NEW'
     if lang == ru_role_id:
-        text3 = f'{patch_number} будет СДЕЛАН'
-    return True, text3
+        text4 = f'{patch_number} будет СДЕЛАН'
+    return True, text4
 
 
 def get_patches_info() -> dict:
@@ -52,9 +58,9 @@ def add_ready_patch(patch_number: str):
 
 def add_abandoned_patch(patch_number: str):
     patches_info = get_patches_info()
-    ready_patches = patches_info['ABANDONED']
-    ready_patches.append(patch_number)
-    patches_info['ABANDONED'] = ready_patches
+    abandoned_patches = patches_info['ABANDONED']
+    abandoned_patches.append(patch_number)
+    patches_info['ABANDONED'] = abandoned_patches
     json.dump(patches_info, open(get_rule('PATHS', 'PATCHES_INFO'), 'w'))
     return f'Wrote {patch_number} to ABANDONED'
 

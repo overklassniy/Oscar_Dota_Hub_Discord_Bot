@@ -7,7 +7,7 @@ from discord.ext import commands
 
 sys.path.append("..")  # Modify the system path to include the parent directory for module access.
 from utils.basic import *  # Import utilities from basic.py which includes functions like get_rule().
-from utils.fun_utils import *  # Import utilities from fun_utils.py which includes functions like get_rule().
+from utils.fun_utils import *  # Import utilities from fun_utils.py
 
 
 class Fun(commands.Cog):
@@ -42,7 +42,8 @@ class Fun(commands.Cog):
         # If the user has the Russian role, respond in Russian.
         if ru_role_id in [y.id for y in ctx.author.roles]:
             text = f'{ctx.author.mention} получает случайное число ({number1} - {number2}): **{random_number}**'
-        print(f'[{get_now()}] {ctx.author.global_name} ({ctx.author.id}) gets a random number ({number1} - {number2}): {random_number}')  # Log the action.
+        print(
+            f'[{get_now()}] {ctx.author.global_name} ({ctx.author.id}) gets a random number ({number1} - {number2}): {random_number}')  # Log the action.
         await ctx.response.send_message(content=text)  # Send the message to the channel.
 
     # Slash command to simulate flipping a coin.

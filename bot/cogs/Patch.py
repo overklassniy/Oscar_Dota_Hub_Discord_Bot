@@ -36,7 +36,8 @@ class Patch(commands.Cog):
             en_role_id = get_rule('ROLES_IDS', 'EN')
             lang = ru_role_id if ru_role_id in [y.id for y in ctx.user.roles] else en_role_id
             patch_number = self.children[0].value.lower()
-            if is_allowed_patch_string(patch_number) and patch_number < get_rule('STRINGS', 'MAX_PATCH') and is_patch_new(patch_number, ctx)[0]:
+            ispatchnew = is_patch_new(patch_number, ctx)
+            if is_allowed_patch_string(patch_number) and patch_number < get_rule('STRINGS', 'MAX_PATCH') and ispatchnew[0]:
                 embed = discord.Embed(color=discord.Color.yellow())
                 embed.set_author(name=ctx.user.global_name, icon_url=ctx.user.avatar)
                 title = 'A new patch has been requested' if lang == en_role_id else 'Запрошен новый патч'
@@ -49,9 +50,14 @@ class Patch(commands.Cog):
                 message = await ctx.original_response()
                 print(f'[{get_now()}] {add_requested_patch(message.id, patch_number)}')
             else:
-                error_response = 'Invalid patch number, please, use only decimal numbers, dot and correct patch letter.'
-                if lang == ru_role_id:
-                    error_response = 'Неверный номер патча, пожалуйста, используйте только десятичные числа, точку и правильную букву патча.'
+                error_response = 'Error occured.'
+                if not (is_allowed_patch_string(patch_number)) or not (patch_number < get_rule('STRINGS', 'MAX_PATCH')):
+                    error_response = 'Invalid patch number, please, use only decimal numbers, dot and correct patch letter.'
+                    if lang == ru_role_id:
+                        error_response = 'Неверный номер патча, пожалуйста, используйте только десятичные числа, точку и правильную букву патча.'
+                elif not (ispatchnew[0]):
+                    error_response = ispatchnew[1]
+                print(f'[{get_now()}] {patch_number} {error_response} {ctx.user.global_name} ({ctx.user.id})')
                 await ctx.respond(error_response, ephemeral=True)
 
     @patch_commands_group.command(name="request", description="Request a new patch")
