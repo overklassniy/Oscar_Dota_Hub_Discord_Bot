@@ -1,6 +1,7 @@
 import json
 
 import discord
+from discord.ext import commands
 from utils.basic import *
 
 
@@ -34,17 +35,20 @@ async def send_start_state(listeners):
 async def handle_error(listeners, ctx: discord.ApplicationContext, error):
     time = get_now()
     channel = listeners.bot.get_channel(get_rule('CHANNELS_IDS', 'ERRORS'))
+    author_id = ctx.author.id
+    channel_id = ctx.channel.id
+    channel_description = f"Channel: <#{channel_id}>\n"
+    if isinstance(error, commands.NoPrivateMessage):
+        channel_description = f"Channel (DM): `{channel_id}`\n"
+    command = ctx.command
     embed = discord.Embed(
         title="An error has occurred!",
-        description=f"User: <@{ctx.author.id}>\n" +
-                    f"Channel: <#{ctx.channel.id}>\n" +
-                    f"Command: `{ctx.command}`\n" +
+        description=f"User: <@{author_id}>\n" +
+                    channel_description +
+                    f"Command: `{command}`\n" +
                     f"Error: `{str(error)}`",
         color=0xff0000
     )
     embed.set_footer(text=f'Time: {time}')
     print(f'[{time}] Sending error message')
     await channel.send(embed=embed)
-    print(error)
-    message = await ctx.send('An error occurred. Please try again.')
-    await message.delete(delay=5)

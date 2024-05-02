@@ -19,7 +19,7 @@ class Verification(commands.Cog):
         self.bot = bot  # Store an instance of the bot.
         print(f'[{get_now()}] Verification cog loaded')  # Log the loading of the Verification cog.
 
-    verification_commands_group = SlashCommandGroup("verification", "Commands for user verification")
+    verification_commands_group = SlashCommandGroup("verification", "Commands for user verification", guild_only=True)
 
     @verification_commands_group.command(name='verify', description="Command for user verification")
     @commands.has_role(unverified_role_id)  # Restrict this command to users with the 'unverified' role.

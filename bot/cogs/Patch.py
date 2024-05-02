@@ -20,7 +20,7 @@ class Patch(commands.Cog):
         self.bot = bot  # Store an instance of the bot.
         print(f'[{get_now()}] Patch cog loaded')  # Log the initialization of the Patch cog.
 
-    patch_commands_group = SlashCommandGroup("patch", "Commands for patch requests")
+    patch_commands_group = SlashCommandGroup("patch", "Commands for patch requests", guild_only=True)
 
     class RequestModal(discord.ui.Modal):
         # Modal to handle user input for patch requests.
@@ -51,13 +51,19 @@ class Patch(commands.Cog):
                 print(f'[{get_now()}] {add_requested_patch(message.id, patch_number)}')
             else:
                 error_response = 'Error occured.'
-                if not (is_allowed_patch_string(patch_number)) or not (patch_number < get_rule('STRINGS', 'MAX_PATCH')):
+                if not is_allowed_patch_string(patch_number) or not patch_number < get_rule('STRINGS', 'MAX_PATCH'):
                     error_response = 'Invalid patch number, please, use only decimal numbers, dot and correct patch letter.'
+                    print(f'[{get_now()}] {ctx.user.global_name} ({ctx.user.id}) Invalid patch number {patch_number}')
                     if lang == ru_role_id:
                         error_response = 'Неверный номер патча, пожалуйста, используйте только десятичные числа, точку и правильную букву патча.'
-                elif not (ispatchnew[0]):
+                elif not ispatchnew[0]:
                     error_response = ispatchnew[1]
-                print(f'[{get_now()}] {patch_number} {error_response} {ctx.user.global_name} ({ctx.user.id})')
+                    if ispatchnew[2] == 'abandoned':
+                        print(f'[{get_now()}] {ctx.user.global_name} ({ctx.user.id}) The {patch_number} is ABANDONED')
+                    elif ispatchnew[2] == 'ready':
+                        print(f'[{get_now()}] {ctx.user.global_name} ({ctx.user.id}) The {patch_number} is READY')
+                    elif ispatchnew[2] == 'requested':
+                        print(f'[{get_now()}] {ctx.user.global_name} ({ctx.user.id}) The {patch_number} is REQUESTED')
                 await ctx.respond(error_response, ephemeral=True)
 
     @patch_commands_group.command(name="request", description="Request a new patch")
@@ -85,6 +91,7 @@ class Patch(commands.Cog):
     @option("request_id", description="ID of the message with requested patch", required=True)
     async def setdone(self, ctx: discord.ApplicationContext, request_id: str):
         # Command to mark a patch request as completed.
+        request_id = request_id.split('-')[-1]
         patch_number = get_requested_patch(request_id)
         print(f'[{get_now()}] {delete_requested_patch(request_id)}')
         print(f'[{get_now()}] {add_ready_patch(patch_number)}')
@@ -100,6 +107,7 @@ class Patch(commands.Cog):
     @option("request_id", description="ID of the message with requested patch", required=True)
     async def setabandoned(self, ctx: discord.ApplicationContext, request_id: str):
         # Command to mark a patch request as abandoned.
+        request_id = request_id.split('-')[-1]
         patch_number = get_requested_patch(request_id)
         print(f'[{get_now()}] {delete_requested_patch(request_id)}')
         print(f'[{get_now()}] {add_abandoned_patch(patch_number)}')

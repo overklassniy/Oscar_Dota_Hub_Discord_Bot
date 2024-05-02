@@ -14,12 +14,12 @@ class Help(commands.Cog):
         print(f'[{get_now()}] Help cog loaded')  # Log the initialization of the Fun cog.
 
     # Group of slash commands under the 'help' category.
-    help_commands_group = SlashCommandGroup("help", "Help commands")
+    help_commands_group = SlashCommandGroup("help", "Help commands", guild_only=True)
 
     @help_commands_group.command(name='about', description="Get information about the bot.")
     async def about(self, ctx: discord.ApplicationContext):
         await ctx.respond(content='Sorry, "help" module is not implemented yet.', ephemeral=True)
-        print(f'[{get_now()}] "/help about" used by {ctx.author.display_name} ({ctx.author.id}) in {ctx.channel.name} ({ctx.channel.id})')
+        print(f'[{get_now()}] "/help about" used by {ctx.author.global_name} ({ctx.author.id}) in {ctx.channel.name} ({ctx.channel.id})')
 
 
 # Function to add this cog to the bot.

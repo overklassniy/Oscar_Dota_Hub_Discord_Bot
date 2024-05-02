@@ -25,21 +25,21 @@ def is_patch_new(patch_number: str, ctx: discord.ApplicationContext):
         text1 = f'The {patch_number} is ABANDONED'
         if lang == ru_role_id:
             text1 = f'{patch_number} НЕ БУДЕТ СДЕЛАН'
-        return False, text1
+        return False, text1, 'abandoned'
     if patch_number in done:
         text2 = f'The {patch_number} is READY'
         if lang == ru_role_id:
             text2 = f'{patch_number} уже СДЕЛАН'
-        return False, text2
+        return False, text2, 'ready'
     if patch_number in requested:
         text3 = f'The {patch_number} is REQUESTED'
         if lang == ru_role_id:
             text3 = f'{patch_number} уже ЗАПРОШЕН'
-        return False, text3
+        return False, text3, 'requested'
     text4 = f'The {patch_number} is NEW'
     if lang == ru_role_id:
         text4 = f'{patch_number} будет СДЕЛАН'
-    return True, text4
+    return True, text4, 'new'
 
 
 def get_patches_info() -> dict:

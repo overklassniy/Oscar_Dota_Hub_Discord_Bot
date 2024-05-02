@@ -18,6 +18,9 @@ class Tools(commands.Cog):
     @commands.command()
     async def move(self, ctx: discord.ApplicationContext, channel: discord.TextChannel):
         # The move command is used to relocate a message to another channel within the server.
+        if ctx.guild.id != get_rule('INTEGERS', 'GUILD_ID'):
+            raise commands.NoPrivateMessage
+
         if not await is_privileged(ctx, administration_roles):
             # Check if the user has the required privileges to execute the command.
             print(f'[{get_now()}] No permission to perform MOVE command for {ctx.author.name} ({ctx.author.id})')

@@ -87,8 +87,15 @@ class Listeners(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: discord.ApplicationContext, error):
         # Handle generic command errors.
+        if isinstance(error, commands.errors.NoPrivateMessage):
+            await handle_error(self, ctx, error)
+            message = await ctx.send('This command cannot be used in private messages.')
+            await message.delete(delay=5)
+            raise error
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
             await handle_error(self, ctx, error)
+            message = await ctx.send('An error occurred. Please try again.')
+            await message.delete(delay=5)
         else:
             raise error
 
@@ -98,11 +105,19 @@ class Listeners(commands.Cog):
         if isinstance(error, commands.errors.MissingAnyRole) or isinstance(error, commands.errors.MissingRole):
             roles_ids = list(map(int, re.findall(r'\d+', str(error))))
             roles = ' / '.join(f'<@&{role_id}>' for role_id in roles_ids)
+            await handle_error(self, ctx, error)
             await ctx.respond(f'You are missing the role: {roles}', ephemeral=True)
+            raise error
+        if isinstance(error, commands.errors.NoPrivateMessage):
+            await handle_error(self, ctx, error)
+            await ctx.respond('This command cannot be used in private messages.', ephemeral=True)
             raise error
         if not testing and get_rule('BOOLEANS', 'SEND_ERRORS'):
             await handle_error(self, ctx, error)
+            message = await ctx.send('An error occurred. Please try again.')
+            await message.delete(delay=5)
         else:
+            await handle_error(self, ctx, error)
             raise error
 
 

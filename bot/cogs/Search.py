@@ -19,7 +19,7 @@ class Search(commands.Cog):
         self.bot = bot  # Reference to the Discord bot instance.
         print(f'[{get_now()}] Search cog loaded')  # Log the loading of the Search cog.
 
-    search_commands_group = SlashCommandGroup("search", "Search related commands")
+    search_commands_group = SlashCommandGroup("search", "Search related commands", guild_only=True)
 
     @search_commands_group.command(name="search", description="Send search message")
     @commands.has_any_role(*administration_roles)
@@ -47,6 +47,9 @@ class Search(commands.Cog):
 
     @commands.command()
     async def gather(self, ctx: discord.ApplicationContext, ip: str = None):
+        if ctx.guild.id != get_rule('INTEGERS', 'GUILD_ID'):
+            raise commands.NoPrivateMessage
+
         if not await is_privileged(ctx, administration_roles):
             print(f'[{get_now()}] No permission to perform GATHER command for {ctx.author.name} ({ctx.author.id})')
             await ctx.respond('You do not have permission to perform this command', ephemeral=True)

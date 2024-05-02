@@ -14,14 +14,14 @@ administration_roles = get_rule('ROLES_IDS', 'ADMINISTRATION')[:2]
 
 class Cogs(commands.Cog):
     def __init__(self, bot):
-        print(f'[{get_now()}] Cogs cog loaded')  # Log when the Cogs.md cog is fully loaded.
+        print(f'[{get_now()}] Cogs cog loaded')  # Log when the Cogs cog is fully loaded.
         self.bot = bot  # Store the bot instance within the class for further use.
 
     # Create a group for slash commands related to cog management.
-    cogs_commands_group = SlashCommandGroup("cogs", "Cogs.md Management Commands")
+    cogs_commands_group = SlashCommandGroup("cogs", "Cogs Management Commands")
 
     # Slash command to load a specific cog.
-    @cogs_commands_group.command(name="load", description="Load a specific cog")
+    @cogs_commands_group.command(name="load", description="Load a specific cog", guild_only=True)
     @commands.has_any_role(*administration_roles)  # Restrict command to users with administration roles.
     @option(name="extension", description="Cog extension to load", required=True)
     async def load(self, ctx: discord.ApplicationContext, extension: str):

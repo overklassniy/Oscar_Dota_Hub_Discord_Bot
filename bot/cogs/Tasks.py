@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from copy import copy
 from itertools import cycle
@@ -69,7 +70,18 @@ class Tasks(commands.Cog):
         if channel:  # Проверяем, что канал существует
             new_lines, last_file_position = read_new_log_lines(get_latest_log_file(), last_file_position)
             if new_lines:  # Если есть новые строки, отправляем их в канал
-                await channel.send(f"```{''.join(new_lines)}```")
+                # Объединяем строки и разделяем сообщение по символу переноса строки
+                full_message = ''.join(new_lines)
+                messages = full_message.split('\n')
+                message_chunk = ''
+                for line in messages:
+                    if len(message_chunk) + len(line) + 1 > 1990:
+                        await channel.send(f"```h\n{message_chunk}\n```")
+                        message_chunk = ''
+                        await asyncio.sleep(15)  # Пауза в 15 секунд
+                    message_chunk += line + '\n'
+                if message_chunk:
+                    await channel.send(f"```h\n{message_chunk}\n```")
 
 
 def setup(bot):

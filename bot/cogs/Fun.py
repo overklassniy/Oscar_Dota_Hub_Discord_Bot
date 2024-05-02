@@ -16,7 +16,7 @@ class Fun(commands.Cog):
         print(f'[{get_now()}] Fun cog loaded')  # Log the initialization of the Fun cog.
 
     # Group of slash commands under the 'fun' category.
-    fun_commands_group = SlashCommandGroup("fun", "Commands for fun")
+    fun_commands_group = SlashCommandGroup("fun", "Commands for fun", guild_only=True)
 
     # Slash command to simulate a dice roll, reminiscent of the /roll command in Dota 2.
     @fun_commands_group.command(name='roll', description="Roll a random number within a range.")
