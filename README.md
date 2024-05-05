@@ -1,5 +1,7 @@
 # Oscar Dota Hub Discord Bot
 
+[![CodeFactor](https://www.codefactor.io/repository/github/overklassniy/oscar_dota_hub_discord_bot/badge)](https://www.codefactor.io/repository/github/overklassniy/oscar_dota_hub_discord_bot)
+
 Welcome to the GitHub repository of the Oscar Dota Hub Discord Bot, specifically designed for our Discord server dedicated to archiving old Dota
 patches. This bot enhances the management and retrieval of Dota patch information, making it easier for community members to access and explore
 historical game data.
