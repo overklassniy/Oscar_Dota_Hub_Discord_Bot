@@ -70,3 +70,26 @@ def get_latest_log_file(logs_directory: str = 'logs') -> str:
 
     # Возвращаем самый новый файл
     return logs_directory + '/' + log_files[0] if log_files else None
+
+
+def write_stats(data: dict):
+    with open(get_rule('PATHS', 'STATS'), 'w', encoding='utf-8') as file:
+        json.dump(data, file)
+        print(f'[{get_now()}] Written stats.json')
+
+
+def get_stats() -> dict:
+    with open(get_rule('PATHS', 'STATS'), 'r', encoding='utf-8') as file:
+        content = file.read()
+        unpacked_data = json.loads(content)
+    return unpacked_data
+
+
+default_stats = {
+    'TIPS_USED_TODAY': 0,
+    'TIPS_USED': 0,
+    'SHARDS_GIVEN': 0,
+    'SHARDS_RECEIVED': 0,
+    'TIPS_RECEIVED': 0,
+    'TIPS_RECEIVED_TODAY': 0
+}

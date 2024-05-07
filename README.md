@@ -17,7 +17,8 @@ historical game data.
 
 This bot is integral to our server's functionality, providing tools that help users access and navigate our extensive archive of Dota patches. It is
 tailored to ensure that members can easily find and discuss historical data or patches. Refer to
-the [documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md) for detailed information on each command and
+the [documentation](https://github.com/overklassniy/Oscar_Dota_Hub_Discord_Bot/blob/master/docs/en/Documentation.md) for detailed information on each
+command and
 how to use them effectively within our community.
 
 ## Contributing

@@ -1,4 +1,5 @@
 import sys
+from copy import deepcopy
 from random import randint, choice
 
 import discord
@@ -87,17 +88,42 @@ class Fun(commands.Cog):
             await ctx.respond(not_bot_text, ephemeral=True)
             return
 
+        id1 = ctx.author.id
+        stats = get_stats()
+        sid1 = str(id1)
+        if sid1 in list(stats.keys()):
+            if stats[sid1]['TIPS_USED_TODAY'] == 3:
+                print(f'[{get_now()}] {ctx.author.id} ({ctx.author.global_name}) tried to break the tip limit with {member.id} ({member.global_name})')
+                no_tips = 'No tips left.'
+                if ru_role_id in [y.id for y in ctx.author.roles]:
+                    no_tips = 'У Вас не осталось похвал.'
+                await ctx.respond(no_tips, ephemeral=True)
+                return
+        else:
+            stats[sid1] = deepcopy(default_stats)
+
+        stats[sid1]['TIPS_USED_TODAY'] += 1
+        stats[sid1]['TIPS_USED'] += 1
+        stats[sid1]['SHARDS_GIVEN'] += 50
+
         name_1 = ctx.author.global_name
         rgb_color_1 = ctx.author.color.to_rgb()[::-1] + tuple([255])
         avatar_url_1 = ctx.author.avatar.url
         avatar_url256_1 = avatar_url_1[:-13] + 'png?size=256'
-        id1 = ctx.author.id
 
         name_2 = member.global_name
         rgb_color_2 = member.color.to_rgb()[::-1] + tuple([255])
         avatar_url_2 = member.avatar.url
         avatar_url256_2 = avatar_url_2[:-13] + 'png?size=256'
         id2 = member.id
+
+        sid2 = str(id2)
+        if sid2 not in list(stats.keys()):
+            stats[sid2] = deepcopy(default_stats)
+
+        stats[sid2]['TIPS_RECEIVED'] += 1
+        stats[sid2]['TIPS_RECEIVED_TODAY'] += 1
+        stats[sid2]['SHARDS_RECEIVED'] += 50
 
         avatar_path_1 = download_image(avatar_url256_1, f'temp/avatar_{id1}.png')
         avatar_path_2 = download_image(avatar_url256_2, f'temp/avatar_{id2}.png')
@@ -109,11 +135,12 @@ class Fun(commands.Cog):
         create_tip_image(name_1=name_1, name_2=name_2, avatar_path_1=avatar_path_1, avatar_path_2=avatar_path_2, text_color_1=rgb_color_1,
                          text_color_2=rgb_color_2, output_path=tip_path)
 
-        print(f'[{get_now()}] {name_1} ({id1} tipped {name_2} ({id2})')
+        print(f'[{get_now()}] {id1} ({name_1}) tipped {id2} ({name_2})')
         text = f'{ctx.author.mention} TIPPED {member.mention}!'
         if ru_role_id in [y.id for y in member.roles]:
             text = f'{ctx.author.mention} ХВАЛИТ {member.mention}!'
         await ctx.respond(content=text, file=discord.File(tip_path, 'tip.png'))
+        write_stats(stats)
 
 
 # Function to add this cog to the bot.

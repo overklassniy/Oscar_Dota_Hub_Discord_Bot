@@ -141,11 +141,11 @@ class Patch(commands.Cog):
         manifests = pre_manifests.loc[idx]
         depot_manifest_dict = manifests.groupby('DepotID')['ManifestID'].apply(list).to_dict()
         script = create_script(depot_manifest_dict, max_timestamp)
-        print(f'[{get_now()}] Created script for {number} ({tdate})')
         script_name = f'temp/steamcmdscript_dota{number}.txt'
         fscript = open(script_name, 'w', encoding='utf-8')
         fscript.write(f'// {number}\n// {tdate}\n\n{script}\n')
         fscript.close()
+        print(f'[{get_now()}] Created script for {number} ({tdate}) by {ctx.author.id} ({ctx.author.name})')
         text = f"# {number}\n> Created by <@{get_rule('INTEGERS', 'OSCAR_ID')}>'om. Please check the correctness of the script."
         if ru_role_id in [y.id for y in ctx.author.roles]:
             text = f"# {number}\n> Сделан <@{get_rule('INTEGERS', 'OSCAR_ID')}>'ом. Пожалуйста, проверяйте правильность скрипта."

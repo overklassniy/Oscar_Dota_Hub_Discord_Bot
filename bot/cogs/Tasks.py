@@ -76,12 +76,12 @@ class Tasks(commands.Cog):
                 message_chunk = ''
                 for line in messages:
                     if len(message_chunk) + len(line) + 1 > 1990:
-                        await channel.send(f"```h\n{message_chunk}\n```")
+                        await channel.send(f"```prolog\n{message_chunk}\n```")
                         message_chunk = ''
                         await asyncio.sleep(15)  # Пауза в 15 секунд
                     message_chunk += line + '\n'
                 if message_chunk:
-                    await channel.send(f"```h\n{message_chunk}\n```")
+                    await channel.send(f"```prolog\n{message_chunk}\n```")
 
 
 def setup(bot):
