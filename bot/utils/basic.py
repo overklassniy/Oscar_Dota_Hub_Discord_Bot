@@ -93,3 +93,9 @@ default_stats = {
     'TIPS_RECEIVED': 0,
     'TIPS_RECEIVED_TODAY': 0
 }
+
+
+def rgb_to_hex(rgb: tuple) -> str:
+    """Converts RGB color to HEX."""
+    r, g, b = rgb
+    return f'#{r:02x}{g:02x}{b:02x}'

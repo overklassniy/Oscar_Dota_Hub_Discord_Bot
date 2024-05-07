@@ -58,7 +58,7 @@ def create_tip_image(name_1: str, name_2: str, avatar_path_1: str, avatar_path_2
         template[top_left_corner_1[1]:top_left_corner_1[1] + avatar_1.shape[0], top_left_corner_1[0]:top_left_corner_1[0] + avatar_1.shape[1],
         :3] = avatar_1
 
-    font = cv2.FONT_HERSHEY_SIMPLEX
+    font = cv2.FONT_HERSHEY_COMPLEX
 
     text_size_1 = cv2.getTextSize(name_1, font, font_scale, font_thickness)[0]
 
@@ -97,3 +97,13 @@ def create_tip_image(name_1: str, name_2: str, avatar_path_1: str, avatar_path_2
     cv2.imwrite(output_path, template, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
     return f'[{get_now()}] Tip image created: {output_path}'
+
+
+def tips_declension(tips):
+    last_digit = tips % 10
+    if 10 <= tips % 100 <= 20 or last_digit == 0 or 5 <= last_digit <= 9:
+        return f"{tips} раз"
+    elif last_digit == 1:
+        return f"{tips} раз"
+    else:
+        return f"{tips} раза"

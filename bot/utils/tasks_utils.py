@@ -35,7 +35,7 @@ async def send_search(tasks, channel_id: int):
     if all([
         now.hour == 11,
         now.minute in {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-        await is_channel_empty(channel),
+        # await is_channel_empty(channel),
     ]):
         image_url = choice(search_images)
         guild_id = get_rule('INTEGERS', 'GUILD_ID')
@@ -60,3 +60,13 @@ def read_new_log_lines(file_path: str, last_position: int) -> tuple:
         new_lines = file.readlines()
         last_position = file.tell()
     return new_lines, last_position
+
+
+def reset_daily_tips():
+    now = datetime.datetime.now()
+    if all([now.hour == 9, now.minute in {0, 1, 2}]):
+        stats = get_stats()
+        for member_id in list(stats.keys()):
+            stats[member_id]['TIPS_USED_TODAY'] = 0
+            stats[member_id]['TIPS_RECEIVED_TODAY'] = 0
+        write_stats(stats)

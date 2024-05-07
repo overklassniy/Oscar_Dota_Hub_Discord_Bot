@@ -83,6 +83,10 @@ class Tasks(commands.Cog):
                 if message_chunk:
                     await channel.send(f"```prolog\n{message_chunk}\n```")
 
+    @tasks.loop(seconds=55)
+    async def clear_daily_stats(self):
+        reset_daily_tips()
+
 
 def setup(bot):
     bot.add_cog(Tasks(bot))

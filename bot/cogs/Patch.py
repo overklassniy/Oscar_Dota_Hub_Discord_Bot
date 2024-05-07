@@ -77,19 +77,19 @@ class Patch(commands.Cog):
         modal = self.RequestModal(title='Patch Request')
         await ctx.send_modal(modal)
 
-    @patch_commands_group.command(name="setmaxpatch", description="Set the latest patch that can be requested")
+    @patch_commands_group.command(name="set_max_patch", description="Set the latest patch that can be requested")
     @commands.has_any_role(*administration_roles)
     @option("max_patch", description="The latest patch number", required=True)
-    async def setmaxpatch(self, ctx: discord.ApplicationContext, max_patch: str):
+    async def set_max_patch(self, ctx: discord.ApplicationContext, max_patch: str):
         # Command to set the maximum allowable patch number.
         write_rule('STRINGS', 'MAX_PATCH', max_patch)
         await ctx.respond(f'Max patch set to {max_patch}', ephemeral=True)
         print(f'[{get_now()}] Set max patch to {max_patch}')
 
-    @patch_commands_group.command(name="setdone", description="Set the patch request status: DONE")
+    @patch_commands_group.command(name="set_done", description="Set the patch request status: DONE")
     @commands.has_any_role(*administration_roles)
     @option("request_id", description="ID of the message with requested patch", required=True)
-    async def setdone(self, ctx: discord.ApplicationContext, request_id: str):
+    async def set_done(self, ctx: discord.ApplicationContext, request_id: str):
         # Command to mark a patch request as completed.
         request_id = request_id.split('-')[-1]
         patch_number = get_requested_patch(request_id)
@@ -102,10 +102,10 @@ class Patch(commands.Cog):
         await message.edit(embed=embed)
         await ctx.respond('Done', ephemeral=True)
 
-    @patch_commands_group.command(name="setabandoned", description="Set the patch request status: ABANDONED")
+    @patch_commands_group.command(name="set_abandoned", description="Set the patch request status: ABANDONED")
     @commands.has_any_role(*administration_roles)
     @option("request_id", description="ID of the message with requested patch", required=True)
-    async def setabandoned(self, ctx: discord.ApplicationContext, request_id: str):
+    async def set_abandoned(self, ctx: discord.ApplicationContext, request_id: str):
         # Command to mark a patch request as abandoned.
         request_id = request_id.split('-')[-1]
         patch_number = get_requested_patch(request_id)

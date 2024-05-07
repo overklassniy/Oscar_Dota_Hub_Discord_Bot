@@ -3,6 +3,7 @@ from copy import deepcopy
 from random import randint, choice
 
 import discord
+from colorthief import ColorThief
 from discord import SlashCommandGroup, option
 from discord.ext import commands
 
@@ -62,7 +63,7 @@ class Fun(commands.Cog):
 
     @fun_commands_group.command(name='tip', description="Tip a member.")
     async def tip(self, ctx: discord.ApplicationContext,
-                  member: discord.Option(discord.SlashCommandOptionType.mentionable, name="member", description="Member to tip.", required=True)):
+                  member: discord.Option(discord.SlashCommandOptionType.mentionable, name="member", description="Member to tip", required=True)):
         ru_role_id = get_rule('ROLES_IDS', 'RU')
         if not isinstance(member, discord.Member):
             incorrect_member_text = 'Incorrect member.'
@@ -92,7 +93,7 @@ class Fun(commands.Cog):
         stats = get_stats()
         sid1 = str(id1)
         if sid1 in list(stats.keys()):
-            if stats[sid1]['TIPS_USED_TODAY'] == 3:
+            if stats[sid1]['TIPS_USED_TODAY'] == 2:
                 print(f'[{get_now()}] {ctx.author.id} ({ctx.author.global_name}) tried to break the tip limit with {member.id} ({member.global_name})')
                 no_tips = 'No tips left.'
                 if ru_role_id in [y.id for y in ctx.author.roles]:
@@ -141,6 +142,49 @@ class Fun(commands.Cog):
             text = f'{ctx.author.mention} ХВАЛИТ {member.mention}!'
         await ctx.respond(content=text, file=discord.File(tip_path, 'tip.png'))
         write_stats(stats)
+
+    @fun_commands_group.command(name='stats', description='Show stats about a member.')
+    async def stats(self, ctx: discord.ApplicationContext,
+                    member: discord.Option(discord.SlashCommandOptionType.mentionable, name="member", description="Member whose statistics to show",
+                                           required=False)):
+        if not member:
+            member = ctx.author
+
+        stats = get_stats()
+
+        member_id = member.id
+        if str(member_id) not in list(stats.keys()):
+            stats[str(member_id)] = default_stats
+
+        ru_role_id = get_rule('ROLES_IDS', 'RU')
+
+        name = member.name
+        avatar_url = member.avatar.url
+        avatar_path = download_image(avatar_url, f'temp/avatar_{member_id}.png')
+        color_thief = ColorThief(avatar_path)
+        color_rgb = color_thief.get_color()
+        color_hex = rgb_to_hex(color_rgb)
+
+        tips_received = stats[str(member_id)]["TIPS_RECEIVED"]
+        tips_used = stats[str(member_id)]["TIPS_USED"]
+
+        got_tipped = f'Got tipped: {tips_received} time' if tips_received == 1 else f'Got tipped: {tips_received} times'
+        tipped = f'Tipped: {tips_used} time' if tips_used == 1 else f'Tipped: {tips_used} times'
+        description = f'Shards: {stats[str(member_id)]["SHARDS_RECEIVED"]}\n{got_tipped}\n{tipped}'
+        if ru_role_id in [y.id for y in member.roles]:
+            got_tipped = f'Получил похвалу: {tips_declension(tips_received)}'
+            tipped = f'Хвалил: {tips_declension(tips_used)}'
+            description = f'Осколки: {stats[str(member_id)]["SHARDS_RECEIVED"]}\n{got_tipped}\n{tipped}'
+
+        stats_embed = discord.Embed(
+            title=name,
+            description=description,
+            color=int(color_hex.replace('#', ''), 16)
+        )
+        stats_embed.set_thumbnail(url=avatar_url)
+
+        print(f'[{get_now()}] /stats initiated by {ctx.author.id} ({ctx.author.global_name}) for {member_id} ({member.global_name})')
+        await ctx.respond(embed=stats_embed, ephemeral=True)
 
 
 # Function to add this cog to the bot.
