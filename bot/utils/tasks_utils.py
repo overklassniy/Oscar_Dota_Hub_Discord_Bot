@@ -35,7 +35,7 @@ async def send_search(tasks, channel_id: int):
     if all([
         now.hour == 11,
         now.minute in {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-        # await is_channel_empty(channel),
+        await is_channel_empty(channel),
     ]):
         image_url = choice(search_images)
         guild_id = get_rule('INTEGERS', 'GUILD_ID')
