@@ -64,12 +64,40 @@ class Listeners(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        if message.author == self.bot.user:
+            return
+
         # This listener handles incoming messages to restrict them to commands only in specific channels.
         channel_id = message.channel.id
         if channel_id in get_rule('CHANNELS_IDS', 'COMMANDS_ONLY_CHANNELS') and not testing:
             if message.type != discord.MessageType.application_command:
                 print(f'[{get_now()}] Deleted message "{message.content}" from channel {message.channel.name}')
                 await message.delete()
+                return
+
+        admin_id = get_rule('INTEGERS', 'ADMINISTRATOR_ID')
+        if message.author.id == admin_id:
+            return
+
+        urls = re.findall(r'(https?://[^\s]+|www\.[^\s]+|[^\s]+\.[a-z]{2,})', message.content)
+        if urls:
+            server_id = get_rule('INTEGERS', 'GUILD_ID')
+            for url in urls:
+                domain_match = re.findall(r'https?://(?:www\.)?([^/]+)', url)
+                if not domain_match:
+                    domain_match = re.findall(r'www\.(.*)', url)
+                    if not domain_match:
+                        domain_match = re.findall(r'([^\s]+\.[a-z]{2,})', url)
+
+                domain = domain_match[0].lower()
+
+                if domain not in get_rule('STRINGS', 'WHITELIST_DOMAINS') and not is_discord_link_allowed(url, server_id):
+                    if re.match(r"(https?://)?(www\.)?(discord\.(gg|com/invite)/([a-zA-Z0-9]+))", url):
+                        if await is_invite_to_target_server(url, server_id):
+                            continue
+                    print(f'[{get_now()}] Deleted message "{message.content}" from channel {message.channel.name}')
+                    await message.delete()
+                    return
 
     @commands.Cog.listener()
     async def on_ready(self):

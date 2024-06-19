@@ -1,5 +1,7 @@
 import json
+import re
 
+import aiohttp
 import discord
 from discord.ext import commands
 from utils.basic import *
@@ -52,3 +54,23 @@ async def handle_error(listeners, ctx: discord.ApplicationContext, error):
     embed.set_footer(text=f'Time: {time}')
     print(f'[{time}] Sending error message')
     await channel.send(embed=embed)
+
+
+def is_discord_link_allowed(url: str, server_id: int) -> bool:
+    match = re.match(r"https?://(?:www\.)?discord(?:app)?\.com/channels/(\d+)/(\d+)/(\d+)", url)
+    if match:
+        return match.group(1) == str(server_id)
+    return False
+
+
+async def is_invite_to_target_server(url: str, server_id: int) -> bool:
+    match = re.match(r"(https?://)?(www\.)?(discord\.(gg|com/invite)/([a-zA-Z0-9]+))", url)
+    if match:
+        invite_code = match.group(5)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://discord.com/api/v10/invites/{invite_code}") as resp:
+                if resp.status == 200:
+                    invite_data = await resp.json()
+                    if invite_data["guild"]["id"] == str(server_id):
+                        return True
+    return False
