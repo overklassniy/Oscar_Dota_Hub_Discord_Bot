@@ -83,6 +83,11 @@ class Listeners(commands.Cog):
         if urls:
             server_id = get_rule('INTEGERS', 'GUILD_ID')
             for url in urls:
+                if url in get_rule('STRINGS', 'BLACKLIST_URLS'):
+                    print(f'[{get_now()}] Deleted message "{message.content}" from channel {message.channel.name}')
+                    await message.delete()
+                    return
+
                 domain_match = re.findall(r'https?://(?:www\.)?([^/]+)', url)
                 if not domain_match:
                     domain_match = re.findall(r'www\.(.*)', url)

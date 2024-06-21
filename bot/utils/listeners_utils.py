@@ -56,8 +56,8 @@ async def handle_error(listeners, ctx: discord.ApplicationContext, error):
     await channel.send(embed=embed)
 
 
-def is_discord_link_allowed(url: str, server_id: int) -> bool:
-    match = re.match(r"https?://(?:www\.)?discord(?:app)?\.com/channels/(\d+)/(\d+)/(\d+)", url)
+def is_discord_link_allowed(url, server_id):
+    match = re.match(r"https?://(?:www\.)?discord(?:app)?\.com/channels/(\d+)/(\d+)/?(\d+)?", url)
     if match:
         return match.group(1) == str(server_id)
     return False
