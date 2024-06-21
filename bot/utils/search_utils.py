@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ui import View
 from utils.steam_opendota import *
@@ -58,19 +60,25 @@ class AcceptButton(View):
         self.users_dict = users_dict
         self.ready_message = ready_message
         self.ready_now = 0
+        self.lock = asyncio.Lock()
 
     @discord.ui.button(label='Я готов', style=discord.ButtonStyle.green)
     async def accept_game(self, button, interaction):
-        self.ready_now += 1
-        self.users_dict[interaction.user] = '✅'
-        description = f'Игроков готово:\n{self.ready_now} / {len(self.users)}\n\n{format_usernames_with_mmr(self.users_dict)}'
-        embed = discord.Embed(
-            title='Монитор готовности',
-            description=description,
-            color=discord.Color.green()
-        )
-        await self.ready_message.edit(embed=embed)
-        await interaction.response.edit_message(view=None)
+        async with self.lock:
+            if self.users_dict[interaction.user] == '✅':
+                await interaction.response.send_message('Вы уже приняли участие.', ephemeral=True)
+                return
+
+            self.ready_now += 1
+            self.users_dict[interaction.user] = '✅'
+            description = f'Игроков готово:\n{self.ready_now} / {len(self.users)}\n\n{format_usernames_with_mmr(self.users_dict)}'
+            embed = discord.Embed(
+                title='Монитор готовности',
+                description=description,
+                color=discord.Color.green()
+            )
+            await self.ready_message.edit(embed=embed)
+            await interaction.response.edit_message(view=None)
 
 
 def create_embeds(message, ip: str):

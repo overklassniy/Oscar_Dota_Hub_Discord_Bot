@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from random import choice
 
@@ -46,16 +47,22 @@ class Search(commands.Cog):
         print(f'[{get_now()}] Search message sent to {ctx.channel.name}')
 
     @commands.command()
-    async def gather(self, ctx: discord.ApplicationContext, ip: str = None):
+    async def gather(self, ctx: commands.Context, ip: str = None):
         if ctx.guild.id != get_rule('INTEGERS', 'GUILD_ID'):
             raise commands.NoPrivateMessage
 
         if not await is_privileged(ctx, administration_roles):
             print(f'[{get_now()}] No permission to perform GATHER command for {ctx.author.name} ({ctx.author.id})')
-            await ctx.respond('You do not have permission to perform this command', ephemeral=True)
+            message = await ctx.send('You do not have permission to perform this command')
+            await asyncio.sleep(5)
+            await message.delete()
             return
 
         replied_message = ctx.message.reference
+        if not replied_message:
+            await ctx.send('Ошибка: Нет ссылки на сообщение.')
+            return
+
         if not await check_ip_provided(ctx, ip):
             return
 
