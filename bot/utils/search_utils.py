@@ -38,7 +38,7 @@ async def send_ready_embed(ctx: discord.ApplicationContext, users, users_dict: d
         description=description,
         color=discord.Color.gold()
     )
-    print(f'[{get_now()}] Senging ready monitor')
+    print(f'[{get_now()}] Sending ready monitor')
     return await ctx.send(embed=embed)
 
 
